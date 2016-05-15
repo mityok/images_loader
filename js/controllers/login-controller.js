@@ -16,6 +16,7 @@ mainApp.controller('LoginCtrl', ['$scope', '$cookies', '$rootScope', '$location'
 			now.setTime(time);
 			//
 			$cookies.put('_galleryInfo',newValue,{expires:now});
+			$rootScope.currentUser = $cookies.get('_galleryInfo');
 			$location.path("/list");
 		}
 	});

@@ -30,7 +30,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			$scope.mainImage = "get_main_thumb.php?s="+server+ "&n="+src;
 			if(updates>=3){
 				for(var i=0;i<3;i++){
-					$scope.latest[i]="get_gallery_thumb.php?s="+server+ "&n="+src+"&g="+(updates-i)+"&c="+1;
+					$scope.latest[i]="get_gallery_thumb.php?s="+server+ "&n="+src+"&g="+(updates-i)+"&c="+1+"&m="+0;
 				}
 			}
 		}else{
