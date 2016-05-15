@@ -1,0 +1,43 @@
+<html>
+<head></head>
+<body><div id="cntr"></div></body>
+<script>
+//http://freelargephotos.com/000995_l.jpg
+var iframe = document.createElement('iframe');
+iframe.setAttribute("id","iframe");
+var ctnr = document.getElementById('cntr');
+var content = '<!DOCTYPE html>'
+ + '<head><title>Dynamic iframe</title>'
+ + '<body><div id="innerCtnr"></div>'
+ + '<script>'
+ +'for (var i=0;i<11;i++){'
+ + 'var downloadingImage = new Image();'
+ +'downloadingImage.onerror = function(e){console.log("err",e);'
+   + 'window.parent.postMessage("Error","*");'
+ +'};'
+ +'downloadingImage.onload = function(e){console.log("ldd",this.src,this);'
+  + 'window.parent.postMessage("Hello","*");'
+ 
+ +'};'
+ +'downloadingImage.src = "http://freelargephotos.com/00299"+i+"_l.jpg";'
+ +'}'
+ + '<\/script>' + '</body></html>';
+
+ctnr.appendChild(iframe);
+
+iframe.contentWindow.document.open('text/htmlreplace');
+iframe.contentWindow.document.write(content);
+iframe.contentWindow.document.close();
+var stop = false;
+window.addEventListener('message',function(e){
+	if(!stop){
+		console.log("message",e);
+		iframe.contentWindow.stop();
+		stop=true;
+	}
+});
+setTimeout(function(){
+	//iframe.contentWindow.stop();
+},200);
+</script>
+</html>

@@ -1,0 +1,46 @@
+body, html{
+	height:100%;
+	min-height: 100%;
+	padding:0;
+	margin:0;
+}
+body{
+	background-color:#eee;
+}
+img{
+	-webkit-filter: invert(1) blur(10px);
+	opacity:0.1;
+}
+.item img{
+	height: 150px;
+}
+.item{
+	position: relative;
+    display: inline-block;
+    margin: 4px;
+    border: 1px solid#ccc;
+    padding: 4px;
+	overflow:hidden;
+}
+.item .banner{
+	position: absolute;
+	top:0;
+	left:0;
+	width:100%;
+	background-color: rgba(255,255,255,0.5);
+	font-size:10px;
+	word-break: break-all;
+}
+.item button{
+	position: absolute;
+	bottom:0;
+	left:0;
+}
+.item button.exclude{
+	right:0;
+	left:auto;
+}
+.show img{
+	-webkit-filter: none;
+	opacity:1;
+}
