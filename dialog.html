@@ -1,0 +1,65 @@
+<html>
+<head>
+<style>
+.dialog {
+  top: 20px;
+  left: 20px;
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 16px rgba(0, 0, 0, .5);
+}
+
+.content {
+  background-image: url("http://freelargephotos.com/003995_l.jpg");
+  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  min-height: 100%;
+}
+
+.left,
+.right {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 20%;
+  opacity: 0.5;
+  background-color: rgba(0, 0, 0, .5);
+  position: absolute;
+}
+
+.right {
+  left: auto;
+  right: 0;
+}
+
+.left:hover,
+.right:hover {
+  opacity: 0.8;
+}
+
+.left:hover ~ .content {
+  background-image: url("http://freelargephotos.com/003944_l.jpg");
+}
+
+.right:hover ~ .content {
+  background-image: url("http://freelargephotos.com/003955_l.jpg");
+}
+
+</style>
+</head>
+<body>
+<div class="dialog">
+  <div class="left">
+  </div>
+  <div class="right">
+  </div>
+  <div class="content">
+  </div>
+</div>
+
+</body>
+</html>
