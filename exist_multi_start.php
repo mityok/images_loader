@@ -1,6 +1,7 @@
 <?php
 include_once("pass.php");
 $href = PasswordSingleton::getInstance()->getPassword();
+$proxy = PasswordSingleton::getInstance()->getProxy();
 $start=isset($_GET['s'])?htmlspecialchars($_GET["s"]):0;
 $end=isset($_GET['e'])?htmlspecialchars($_GET["e"]):500;
 $page=isset($_GET['p'])?htmlspecialchars($_GET["p"]):25;
@@ -19,6 +20,7 @@ for ($i = $start; $i < $end; $i += $page) {
 	curl_setopt($ch_1, CURLOPT_POST, 1);
 	curl_setopt($ch_1, CURLOPT_HEADER, 1);
 	curl_setopt($ch_1, CURLOPT_POSTFIELDS,"startitem=".$i);
+	curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
 	curl_setopt($ch_1, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch_1, CURLOPT_TIMEOUT, 25);
 	curl_multi_add_handle($mh, $ch_1);

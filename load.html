@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+<div id="main" style="position:absolute;width:100px;height:50px;background:red;top:50px;">elem</div>
+<div id="note" >elem</div>
+<script>
+function doMove() {
+var left =parseInt(foo.style.left);
+if(left>1000){
+left=0;
+}
+  foo.style.left = left+1+'px';
+  setTimeout(doMove,20); // call doMove in 20msec
+}
+//start the animation
+var foo = document.getElementById('main');
+var note = document.getElementById('note');
+foo.style.left = '0px';
+doMove(); // start animating
+//simple XHR request in pure JavaScript
+function load(url, callback) {
+	var xhr;
+	if(typeof XMLHttpRequest !== 'undefined') xhr = new XMLHttpRequest();
+	else {
+		var versions = ["MSXML2.XmlHttp.5.0", 
+			 	"MSXML2.XmlHttp.4.0",
+			 	"MSXML2.XmlHttp.3.0", 
+			 	"MSXML2.XmlHttp.2.0",
+			 	"Microsoft.XmlHttp"]
+		for(var i = 0, len = versions.length; i < len; i++) {
+		try {
+			xhr = new ActiveXObject(versions[i]);
+			break;
+		}catch(e){}
+		} // end for
+	}	
+	xhr.onreadystatechange = ensureReadiness;		
+	function ensureReadiness() {
+		if(xhr.readyState < 4) {
+			return;
+		}		
+		if(xhr.status !== 200) {
+			return;
+		}
+		// all is well	
+		if(xhr.readyState === 4) {
+			callback(xhr);
+		}			
+	}	
+	xhr.open('GET', url, true);
+	xhr.send('');
+}
+
+setTimeout(function(){
+	var t0 = performance.now();
+	note.innerHTML="send1: ";
+	load('sample.txt', function(xhr) {
+		var result = xhr.responseText;
+		var object = JSON.parse(result);
+		note.innerHTML="data: " + object.data.length;
+		//console.log(data.data.length);
+		var t1 = performance.now();
+		//console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+	});
+},1000);
+
+//
+var worker = new Worker('worker.js');
+
+worker.addEventListener('message', function(e) {
+  //console.log('results: ',e);
+  //var object = JSON.parse(e.data);
+  note.innerHTML="worker data: "+e.data;
+  //var object = JSON.parse(e.data);
+  //note.innerHTML="worker data: "+object.data.length;
+  //console.log('results: ', e.data);
+}, false);
+setTimeout(function(){
+note.innerHTML="send2: ";
+//console.log('send');
+worker.postMessage('sample.txt'); // Send filename to our worker.
+},5000);
+
+</script>
+</body>
+</html>

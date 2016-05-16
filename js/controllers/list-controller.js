@@ -13,6 +13,15 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		iframe.contentWindow.stop();
 		$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 	}
+	$scope.dump = function(src,server,galleries){
+		//TODO: calculate galleries length before sending to server
+		$http({method: 'GET', url: 'multi_image_get.php?q='+JSON.stringify(galleries)+"&s="+src+"&r="+server+"&t="+1+"&p="+0, cache: false}).
+		then(function(response) {
+			console.log(response);
+        }, function(response) {
+			console.log(response);
+		});
+	}
 	$scope.prev = function(){
 		$scope.start-=$scope.page;
 		spliceList();
@@ -25,9 +34,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		iframe.contentWindow.stop();
 	}
 	$scope.hover = function(src, server, updates){
-
 		if(typeof server != 'undefined' && typeof src != 'undefined' && typeof updates != 'undefined'){
-			$scope.mainImage = "get_main_thumb.php?s="+server+ "&n="+src;
 			if(updates>=3){
 				for(var i=0;i<3;i++){
 					$scope.latest[i]="get_gallery_thumb.php?s="+server+ "&n="+src+"&g="+(updates-i)+"&c="+1+"&m="+0;
@@ -35,7 +42,6 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			}
 		}else{
 			var empty = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-			$scope.mainImage = empty;
 			for(var i=0;i<3;i++){
 					$scope.latest[i]=empty;
 				}

@@ -27,7 +27,7 @@ function runRequest(pos,size){
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.position = pos;
 	xmlhttp.size = size;
-	var url = "http://localhost/images_load/exist_multi_info.php?g="+pos+"&n="+q.src+'&s='+q.server+'&z='+size;
+	var url = "exist_multi_info.php?g="+pos+"&n="+q.src+'&s='+q.server+'&z='+size;
 	xmlhttp.onreadystatechange = function(e) {
 		if (e.target.readyState == 4 && e.target.status == 200) {
 			//get response array

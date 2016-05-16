@@ -1,6 +1,11 @@
 <?php
 include_once("pass.php");
 $href = PasswordSingleton::getInstance()->getPassword();
+$proxy = PasswordSingleton::getInstance()->getProxy();
+$context = NULL;
+if($proxy){
+		$context = stream_context_create(array('http'=>array('method'=>"GET",'proxy' => $proxy)));
+}
 $server=isset($_GET['s'])?htmlspecialchars($_GET["s"]):0;
 $name=isset($_GET['n'])?htmlspecialchars($_GET["n"]):'img';
 $gal=isset($_GET['g'])?htmlspecialchars($_GET["g"]):5;
@@ -17,7 +22,7 @@ if(file_exists($link) && @getimagesize($link)){
 	echo $data;
 }else{
 	header("Internet: true");
-	$data = file_get_contents($url);
+	$data = file_get_contents($url, false, $context);
 	if(!is_dir("$folder/$name")) mkdir("$folder/$name");
 	file_put_contents($link, $data);
 	echo $data;
