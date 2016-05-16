@@ -13,7 +13,7 @@ $count=isset($_GET['c'])?htmlspecialchars($_GET["c"]):1;
 $thumb=isset($_GET['m'])?htmlspecialchars($_GET["m"]):1;
 $thumb = ($thumb==1)?"tn_":"";
 $folder = "thumbs";
-$link = $folder.'/'.$name.'/'.$thumb.substr($name,0,2) . $gal . 'x' . sprintf("%'.03d", $count ) . '.jpg';
+$link = "../".$folder.'/'.$name.'/'.$thumb.substr($name,0,2) . $gal . 'x' . sprintf("%'.03d", $count ) . '.jpg';
 $url = 'http://www.'.$href.($server>0?$server:'').'.com/'.$name.'/'.$thumb.substr($name,0,2) . $gal . 'x' . sprintf("%'.03d", $count ) . '.jpg';
 header("Content-type: image/jpeg");
 if(file_exists($link) && @getimagesize($link)){
@@ -23,7 +23,7 @@ if(file_exists($link) && @getimagesize($link)){
 }else{
 	header("Internet: true");
 	$data = file_get_contents($url, false, $context);
-	if(!is_dir("$folder/$name")) mkdir("$folder/$name");
+	if(!is_dir("../$folder/$name")) mkdir("../$folder/$name");
 	file_put_contents($link, $data);
 	echo $data;
 }

@@ -15,7 +15,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 	}
 	$scope.dump = function(src,server,galleries){
 		//TODO: calculate galleries length before sending to server
-		$http({method: 'GET', url: 'multi_image_get.php?q='+JSON.stringify(galleries)+"&s="+src+"&r="+server+"&t="+1+"&p="+0, cache: false}).
+		$http({method: 'GET', url: 'server/multi_image_get.php?q='+JSON.stringify(galleries)+"&s="+src+"&r="+server+"&t="+1+"&p="+0, cache: false}).
 		then(function(response) {
 			console.log(response);
         }, function(response) {
@@ -37,7 +37,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		if(typeof server != 'undefined' && typeof src != 'undefined' && typeof updates != 'undefined'){
 			if(updates>=3){
 				for(var i=0;i<3;i++){
-					$scope.latest[i]="get_gallery_thumb.php?s="+server+ "&n="+src+"&g="+(updates-i)+"&c="+1+"&m="+0;
+					$scope.latest[i]="server/get_gallery_thumb.php?s="+server+ "&n="+src+"&g="+(updates-i)+"&c="+1+"&m="+0;
 				}
 			}
 		}else{
@@ -143,7 +143,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		//
 		getGalleries();
 		//
-		$http({method: 'GET', url: 'exist_multi_start.php', cache: false}).
+		$http({method: 'GET', url: 'server/exist_multi_start.php', cache: false}).
         then(function(response) {
 			
 			$scope.collection = response.data.items.filter(isIncluded);

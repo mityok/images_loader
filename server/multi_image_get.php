@@ -22,7 +22,7 @@ for($i = $start; $i < $page + $start; $i++){
 	$cur_pics = $gal_arr[$i];
 	for($j = 1; $j <= $cur_pics; $j++){
 		$name = $src.'/'.substr($src, 0, 2).$i.'x'.sprintf("%03s", $j).'.jpg';
-		if (!file_exists('thumbs/'.$name)) {
+		if (!file_exists('../thumbs/'.$name)) {
 			$data[] = 'http://www.'.$href.($server > 0 ? $server : '').'.com/'.$name;
 		}else{
 			$images[] = array('location'=>'FILE','status'=>'OK');
@@ -82,7 +82,7 @@ echo json_encode(array(
 	'files' => $images
 ));
 function storeFile($data,$src,$filename){
-	$dr = 'thumbs/'.$src;
+	$dr = '../thumbs/'.$src;
 	if (file_exists($dr)) {
 	}else{
 		mkdir($dr, 0777, true);
