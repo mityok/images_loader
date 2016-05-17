@@ -22,6 +22,14 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			console.log(response);
 		});
 	}
+	$scope.dropPreloadedGalleries =function(){
+		$http({method: 'POST', url: 'server/write_post.php', data: $scope.galleries}).
+		then(function(response) {
+			console.log(response);
+        }, function(response) {
+			console.log(response);
+		});
+	}
 	$scope.prev = function(){
 		$scope.start-=$scope.page;
 		spliceList();

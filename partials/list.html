@@ -5,10 +5,12 @@
 <button ng-click="send()">Click</button>
 <button ng-click="stopIframe()">Stop</button>
 <button ng-click="imgShow=!imgShow">show</button>
+<button ng-click="dropPreloadedGalleries()">Save 2 File</button>
+<button ng-click="loadPreloadedGalleries()">Load Saved</button>
 <div >
 	<span class="item" ng-repeat="item in list" title="{{item.name}} - ({{item.src}})">
 		<img ng-src="server/get_thumb.php?s={{item.server}}&n={{item.src}}" ng-mouseover="hover(item.src, item.server, item.updates)" ng-mouseout="hover()">
-		<div class="banner">{{item.updates}}-{{item.date | date:'dd/MM/yyyy'}}-{{item.ph}} - {{galleries[item.src+'_'+item.server]}}</div>
+		<div class="banner">{{item.src}}-{{item.updates}}-{{item.date | date:'dd/MM/yyyy'}}-{{item.ph}} - {{galleries[item.src+'_'+item.server]}}</div>
 		<button class="get" ng-click="get(item.updates,item.src,item.server)">get</button>
 		<button class="dump" ng-click="dump(item.src,item.server,galleries[item.src+'_'+item.server])">dump</button>
 		<button class="exclude" ng-click="exclude(item.src, item.server)">X</button>
