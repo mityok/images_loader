@@ -9,7 +9,7 @@ mainApp.config(function($routeProvider) {
         templateUrl: 'partials/list.html',
         controller: 'ListCtrl'
       }).
-      when('/list/:videoId', {
+      when('/list/:itemId', {
         templateUrl: 'partials/list-info.html',
         controller: 'ListInfoCtrl'
       }).
