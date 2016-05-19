@@ -68,29 +68,36 @@ class PasswordSingleton{
 		session_start([
     'cookie_lifetime' => 86400,
 ]);
+		/*
 		$data['SID']=$_SESSION;
-		if(isset($_SESSION['_proxy'])){
-			$json = $_SESSION['_proxy'];
-			$obj = stripslashes($json);
-			$data['pass']=$obj;
-			$data['message']='is set';
-			return $data;
+		echo '-'.isset($_SESSION['_proxy']).'-<br>';
+		echo '-'.empty($_SESSION['_proxy']).'-<br>';
+		echo '-'.array_key_exists('_proxy',$_SESSION).'-<br>';
+		$_SESSION['_proxy']=NULL;
+		return $data;
+		*/
+		if(array_key_exists('_proxy',$_SESSION)){
+			//$json = $_SESSION['_proxy'];
+			$obj = $_SESSION['_proxy'];
+			//$obj = stripslashes($json);
+			//$data['pass']=$obj;
+			//$data['message']='is set';
+			//return $data;
+			return $obj;
 		}else{
 			$timeout = 5;
 			$splited = explode(':',static::$proxy);
 			$val = NULL;
-			$data['message']='not  set';
+			//$data['message']='not  set';
 			if($con = @fsockopen($splited[0], $splited[1], $errorNumber, $errorMessage, $timeout)){
 				//proxy works
 				$data['message']='not  set working';
 				$val = static::$proxy;
 			}
-			$data['pass']=$val;
 			$_SESSION["_proxy"] = $val;
-			
-			return $data;
+			//$data['pass']=$val;
+			return $val;
 		}
-		
 	}
 
 	public function getUserAgent(){

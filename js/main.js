@@ -9,7 +9,7 @@ mainApp.config(function($routeProvider) {
         templateUrl: 'partials/list.html',
         controller: 'ListCtrl'
       }).
-      when('/list/:itemId', {
+      when('/list/:itemId/:serverId', {
         templateUrl: 'partials/list-info.html',
         controller: 'ListInfoCtrl'
       }).
