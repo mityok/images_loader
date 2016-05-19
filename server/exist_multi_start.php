@@ -1,12 +1,23 @@
 <?php
 include_once("pass.php");
+$bef = microtime(TRUE);
 $href = PasswordSingleton::getInstance()->getPassword();
 $proxy = PasswordSingleton::getInstance()->getProxy();
 $start=isset($_GET['s'])?htmlspecialchars($_GET["s"]):0;
 $end=isset($_GET['e'])?htmlspecialchars($_GET["e"]):500;
 $page=isset($_GET['p'])?htmlspecialchars($_GET["p"]):25;
+//
+$errors = NULL;
+set_error_handler('exceptions_error_handler');
 
-$bef = microtime(TRUE);
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+  if (error_reporting() == 0) {
+    return;
+  }
+  if (error_reporting() & $severity) {
+    throw new ErrorException($message, 0, $severity, $filename, $lineno);
+  }
+}
 //
 $mh = curl_multi_init();
 $ch = array();
@@ -66,7 +77,7 @@ function get_headers_from_curl_response($response){
     return array('headers'=>$headers,'body'=>$body);
 }
 function parse($resp, $ch){
-	global $items, $total_items, $end_item, $href;
+	global $items, $total_items, $end_item, $href, $errors;
 	$document = new DOMDocument();
 	@$document->loadHTML($resp);
 	$tags = $document->getElementsByTagName('img');
@@ -89,35 +100,43 @@ function parse($resp, $ch){
 			$end_item = $end;
 		}	
 	}
-	foreach ($tags as $tag) {
-		$src =  $tag->getAttribute('src');
-		$pos = strrpos($src, "1.jpg");
-		$pos2 = strrpos($src, $href);
-		if($pos !== FALSE && $pos2 !== FALSE){
-			$item = array();
-			$imgPhTr = $tag->parentNode->parentNode->parentNode;
-			$nameTr = $imgPhTr->previousSibling;
-			$ageTr = $imgPhTr->nextSibling;
-			$updatesTr = $ageTr->nextSibling;
-			$dateTr = $updatesTr->nextSibling->nextSibling->nextSibling;	
-			$url = explode('/',$src);
-			//$item['href'] = $url[2];
-			$item['server'] = abs((int)filter_var($url[2], FILTER_SANITIZE_NUMBER_INT));
-			$item['src'] = substr($url[3],0,-5);
+	try {
+		foreach ($tags as $tag) {
+			$src =  $tag->getAttribute('src');
+			$pos = strrpos($src, "1.jpg");
+			$pos2 = strrpos($src, $href);
+			if($pos !== FALSE && $pos2 !== FALSE){
+				$item = array();
+				$imgPhTr = $tag->parentNode->parentNode->parentNode;
+				$nameTr = $imgPhTr->previousSibling;
+				$ageTr = $imgPhTr->nextSibling;
+				$updatesTr = $ageTr->nextSibling;
+				$dateTr = $updatesTr->nextSibling->nextSibling->nextSibling;	
+				$url = explode('/',$src);
+				//$item['href'] = $url[2];
+				$item['server'] = abs((int)filter_var($url[2], FILTER_SANITIZE_NUMBER_INT));
+				$item['src'] = substr($url[3],0,-5);
 
-			$item['age'] = $ageTr->childNodes[1]->textContent;
-			$item['updates'] = $updatesTr->childNodes[1]->textContent;
-			$item['name'] = $nameTr->childNodes[1]->textContent;
-			$item['ph'] = $imgPhTr->childNodes[14]->textContent;
-			$item['date'] = $dateTr->childNodes[1]->textContent;
-			
-			$items[] = $item;
+				$item['age'] = $ageTr->childNodes[1]->textContent;
+				$item['updates'] = $updatesTr->childNodes[1]->textContent;
+				$item['name'] = $nameTr->childNodes[1]->textContent;
+				$item['ph'] = $imgPhTr->childNodes[54]->textContent;
+				$item['ph'] = $imgPhTr->childNodes[14]->textContent;
+				$item['date'] = $dateTr->childNodes[1]->textContent;
+				
+				$items[] = $item;
+			}
 		}
+	} catch (Exception $e) {
+		if(!$errors){
+			$errors=array();
+		}
+      $errors[]=$e->getMessage();
 	}
 }
 curl_multi_close($mh);
 $aft = microtime(TRUE) - $bef;
 header('Content-Type: application/json');
 header('Duration: '.$aft);
-echo json_encode(array('items'=>$items,'end'=>$end_item,'total'=>$total_items,'duration'=>$aft));
+echo json_encode(array('items'=>$items,'end'=>$end_item,'total'=>$total_items,'duration'=>$aft,'errors'=>$errors));
 ?>
