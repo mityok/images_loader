@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$window', function ($scope, $http, localStorageService,$window) {
+mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$window', '$timeout', function ($scope, $http, localStorageService,$window, $timeout) {
 	$scope.start = 0;
 	$scope.page = 50;
 	$scope.itemValidation;
@@ -11,6 +11,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 	var iframe;
 	$scope.get = function(updates,src,server){
 		iframe.contentWindow.stop();
+		//getting galleries
 		$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 	}
 	$scope.dump = function(src,server,galleries){
@@ -24,8 +25,17 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			console.log(response);
 		});
 	}
-	$scope.dropPreloadedGalleries =function(){
-		$http({method: 'POST', url: 'server/write_post.php', data: $scope.galleries}).
+	$scope.loadPreloadedGalleries = function(){
+		$http({method: 'GET', url: 'server/read_post.php', data: $scope.collection}).
+		then(function(response) {
+			$scope.collection = response.data.data;
+			spliceList();
+        }, function(response) {
+			console.log(response);
+		});
+	}
+	$scope.dropPreloadedGalleries = function(){
+		$http({method: 'POST', url: 'server/write_post.php', data: $scope.collection}).
 		then(function(response) {
 			console.log(response);
         }, function(response) {
@@ -78,13 +88,27 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		var info = JSON.parse(e.data);
 		if(info.type ==="progress"){
 			console.log("message",info.data);
+			var item = $scope.collection.filter(function(value){
+				return value.src == info.data.src && info.data.server == value.server;
+			})[0];
+			if(!item){
+				return;
+			}
+			if(!item.galleries){
+				item.galleries = [];
+			}
+			item.galleries[info.data.position] = info.data.limit;
+			$scope.dropPreloadedGalleries();
+			//console.log("message2",$scope.item);
+			/*
 			if(!$scope.galleries[info.data.src+"_"+info.data.server]){
 				$scope.galleries[info.data.src+"_"+info.data.server]=[];
 			}
 			$scope.galleries[info.data.src+"_"+info.data.server][info.data.position] = info.data.limit;
-			var obj = {};
-			obj[info.data.src+"_"+info.data.server]=$scope.galleries[info.data.src+"_"+info.data.server];
-			localStorageService.addKey('galleries',obj);
+			*/
+			//var obj = {};
+			//obj[info.data.src+"_"+info.data.server]=$scope.galleries[info.data.src+"_"+info.data.server];
+			//localStorageService.addKey('galleries',obj);
 		}else if(info.type === "loaded"){
 			console.log('gal',$scope.galleries);
 		}
@@ -155,7 +179,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		excluded = localStorageService.getKey('exclude');
 		storedCollection = localStorageService.getKey('collection');
 		//
-		getGalleries();
+		//getGalleries();
 		//
 		$http({method: 'GET', url: 'server/exist_multi_start.php', cache: false}).
         then(function(response) {
@@ -172,4 +196,8 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			console.log(response);
 		});
 	})();
+	$scope.$on('$destroy', function () {
+		angular.element($window).off('message', onMessage);
+		angular.element($window).off('keypress', onKeyPress);
+	});
 }]);

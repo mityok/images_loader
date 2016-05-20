@@ -22,15 +22,15 @@ mainApp.controller('ListInfoCtrl', ['$scope','$http', '$routeParams', '$location
 				return;
 			}
 			/* mock start */
-			response.data={folder:'http://freelargephotos.com/',files:['705711_l.jpg','705712_l.jpg','705713_l.jpg','705714_l.jpg','705715_l.jpg','705716_l.jpg']}
+			//response.data={folder:'http://freelargephotos.com/',files:['705711_l.jpg','705712_l.jpg','705713_l.jpg','705714_l.jpg','705715_l.jpg','705716_l.jpg']}
 			//response.data={folder:'http://freelargephotos.com/',files:['705711_l.jpg','705712_l.jpg']}
-			$scope.collection=response.data.files;
+			//$scope.collection=response.data.files;
 			/* mock end */
-			//$scope.collection = response.data.files.filter(isIncluded);
-			$scope.folder = response.data.folder;
+			$scope.collection = response.data.files.filter(isIncluded);
+			$scope.folder = response.data.folder+'/';
 			console.log($scope.folder,$scope.collection);
+			$scope.counter = 0;
 			$scope.firstImage = $scope.folder+$scope.collection[0];
-	$scope.secondImage = $scope.folder+$scope.collection[1];
         }, function(response) {
 			console.log(response);
 		});
@@ -95,6 +95,10 @@ mainApp.controller('ListInfoCtrl', ['$scope','$http', '$routeParams', '$location
 			},1000);
 		}
 	}
+	$scope.$on('$destroy', function () {
+		$timeout.cancel(playTimer);
+		$timeout.cancel(fadeTimer);
+	});
 	function playAnim(){
 		fadeTimer = $timeout(function(){
 			$scope.nextImageOpacity -= 0.02;

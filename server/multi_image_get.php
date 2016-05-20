@@ -65,7 +65,7 @@ for($i = 0; $i < $len; $i++){
 	$response[] = $httpCode;
 	if($httpCode === 200){
 		$filename = array_pop(explode('/', $data[$i]));
-		storeFile($body, $src, $filename);
+		storeFile($body, $src, $filename, $server);
 		$images[] = array('location'=>'WEB','status'=>'OK');
 	}else{
 		$images[] = array('location'=>'WEB','status'=>'ERROR');
@@ -81,8 +81,8 @@ echo json_encode(array(
 	'message' => $message,
 	'files' => $images
 ));
-function storeFile($data,$src,$filename){
-	$dr = '../thumbs/'.$src;
+function storeFile($data,$src,$filename,$server){
+	$dr = "../thumbs/server$server/$src/images";
 	if (file_exists($dr)) {
 	}else{
 		mkdir($dr, 0777, true);
