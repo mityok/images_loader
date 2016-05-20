@@ -7,6 +7,7 @@
 <button ng-click="imgShow=!imgShow">show</button>
 <button ng-click="dropPreloadedGalleries()">Save 2 File</button>
 <button ng-click="loadPreloadedGalleries()">Load Saved</button>
+<button ng-click="clearSession()">Clear Session</button>
 <div >
 	<span class="item" ng-repeat="item in list" title="{{item.name}} - ({{item.src}})">
 		<a href="#/list/{{item.src}}/{{item.server}}"><img ng-src="server/get_thumb.php?s={{item.server}}&n={{item.src}}" ng-mouseover="hover(item.src, item.server, item.updates)" ng-mouseout="hover()"></a>

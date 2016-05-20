@@ -62,6 +62,12 @@ class PasswordSingleton{
 			return NULL;
 		}
     }
+	public function clearSession(){
+		session_start();
+		session_unset();
+		session_destroy();
+		session_write_close();
+	}
 	
 	public function getProxy(){
 		$data=array();

@@ -120,7 +120,6 @@ function parse($resp, $ch){
 				$item['age'] = $ageTr->childNodes[1]->textContent;
 				$item['updates'] = $updatesTr->childNodes[1]->textContent;
 				$item['name'] = $nameTr->childNodes[1]->textContent;
-				$item['ph'] = $imgPhTr->childNodes[54]->textContent;
 				$item['ph'] = $imgPhTr->childNodes[14]->textContent;
 				$item['date'] = $dateTr->childNodes[1]->textContent;
 				

@@ -14,8 +14,10 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 	}
 	$scope.dump = function(src,server,galleries){
-		//TODO: calculate galleries length before sending to server
-		$http({method: 'GET', url: 'server/multi_image_get.php?q='+JSON.stringify(galleries)+"&s="+src+"&r="+server+"&t="+1+"&p="+0, cache: false}).
+		//TODO: set max to 200 units
+		var total = galleries.reduce(function(a, b) {return a + b;});
+		console.log(total);
+		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+1+"&p="+0, data: galleries, cache: false}).
 		then(function(response) {
 			console.log(response);
         }, function(response) {
@@ -29,6 +31,10 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
         }, function(response) {
 			console.log(response);
 		});
+	}
+	$scope.clearSession = function(){
+		$http({method: 'GET', url: 'server/test_proxy.php?c=1', cache: false});
+		
 	}
 	$scope.prev = function(){
 		$scope.start-=$scope.page;

@@ -3,7 +3,7 @@ include_once("pass.php");
 $href = PasswordSingleton::getInstance()->getPassword();
 $proxy = PasswordSingleton::getInstance()->getProxy();
 ini_set('memory_limit', '-1');
-$gal_arr= json_decode(htmlspecialchars($_GET["q"]));
+$gal_arr = json_decode(file_get_contents("php://input"));
 $src = htmlspecialchars($_GET["s"]);
 $server = (int)htmlspecialchars($_GET["r"]);
 $page = (int)htmlspecialchars($_GET["p"]);
