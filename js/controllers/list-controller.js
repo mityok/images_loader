@@ -7,18 +7,35 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 	$scope.mainImage= null;
 	$scope.latest=[];
 	var storedCollection ,galleriesNeedsToUpdate = [];
-	var excluded;
 	var iframe;
+	var MAX_PARALLEL_IMAGE_DUMP = 100;
 	$scope.get = function(updates,src,server){
 		iframe.contentWindow.stop();
 		//getting galleries
 		$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 	}
+	function clipPage(arr, start, limit){
+		var sum = 0;
+		for (var i = start; i < arr.length; i++) {
+			sum += arr[i];
+			if (sum >= limit) {
+				return i- start;
+			}
+		}
+		return arr.length;
+	}
 	$scope.dump = function(src,server,galleries){
 		//TODO: set max to 200 units
+		//var total = galleries.reduce(function(a, b) {return a + b;});
 		var total = galleries.reduce(function(a, b) {return a + b;});
+		
 		console.log(total);
-		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+1+"&p="+0, data: galleries, cache: false}).
+		var page = 0;
+		if(total >= MAX_PARALLEL_IMAGE_DUMP){
+			page = clipPage(galleries,0,MAX_PARALLEL_IMAGE_DUMP);
+		}
+		console.log('page',page);
+		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+1+"&p="+page, data: galleries, cache: false}).
 		then(function(response) {
 			console.log(response);
         }, function(response) {
@@ -71,8 +88,10 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 				}
 		}
 	}
-	$scope.exclude = function(src, server){
-		localStorageService.addKey('exclude',src+'_'+server);
+	$scope.exclude = function(item){
+		item.excluded = true;
+		spliceList();
+		$scope.dropPreloadedGalleries();
 	}
 	$scope.send = function(){
 		console.log(localStorageService.getSelected());
@@ -167,17 +186,12 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			}
 		}
 		//
-		if(!excluded){
-			return true;
-		}
-		return excluded.indexOf(value.src+'_'+value.server) < 0;
+		return !value.excluded;
 	}
 	(function init(){
 		angular.element($window).on('message', onMessage);
 		angular.element($window).on('keypress', onKeyPress);
 		iframe = document.getElementById('frm');
-		excluded = localStorageService.getKey('exclude');
-		storedCollection = localStorageService.getKey('collection');
 		//
 		//getGalleries();
 		//

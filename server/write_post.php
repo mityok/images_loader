@@ -4,13 +4,17 @@ $postdata = file_get_contents("php://input");
 header('Content-Type: application/json');
 $message = "OK";
 $dir = "database/";
+$backdir = "database/backup/";
 $file = "dump.txt";
 $filename = "$dir$file";
 if (file_exists($filename)) {
 	//do backup
 	$date = date("Y-M-d-H-m-s", filemtime($filename)).'-'.sprintf("%03s", rand(0, 999));
 	$pieces = explode(".", $file);
-	rename($filename, $dir.$pieces[0]."-$date.".$pieces[1]);
+	if(!is_dir($backdir)){
+		mkdir($backdir, 0777, true);
+	}
+	rename($filename, $backdir.$pieces[0]."-$date.".$pieces[1]);
 }else{
 	if(!is_dir($dir)){
 		mkdir($dir, 0777, true);
