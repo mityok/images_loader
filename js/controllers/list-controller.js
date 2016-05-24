@@ -1,14 +1,14 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$window', '$timeout', function ($scope, $http, localStorageService,$window, $timeout) {
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', function ($scope, $http,$window, $timeout) {
 	$scope.start = 0;
 	$scope.page = 50;
 	$scope.itemValidation;
-	$scope.galleries = {};
 	$scope.mainImage= null;
 	$scope.latest=[];
 	var storedCollection ,galleriesNeedsToUpdate = [];
 	var iframe;
 	var MAX_PARALLEL_IMAGE_DUMP = 100;
+	var getCounter = 0;
 	$scope.get = function(updates,src,server){
 		iframe.contentWindow.stop();
 		//getting galleries
@@ -110,9 +110,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		spliceList();
 		$scope.dropPreloadedGalleries();
 	}
-	$scope.send = function(){
-		console.log(localStorageService.getSelected());
-	};
+
 	//pagination split
 	function spliceList(){
 		$scope.list = $scope.collection.slice($scope.start,$scope.start + $scope.page);
@@ -123,7 +121,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		}
 		var info = JSON.parse(e.data);
 		if(info.type ==="progress"){
-			console.log("message",info.data);
+			//console.log("message",info.data);
 			var item = $scope.collection.filter(function(value){
 				return value.src == info.data.src && info.data.server == value.server;
 			})[0];
@@ -146,12 +144,29 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			//obj[info.data.src+"_"+info.data.server]=$scope.galleries[info.data.src+"_"+info.data.server];
 			//localStorageService.addKey('galleries',obj);
 		}else if(info.type === "loaded"){
-			console.log('gal',$scope.galleries);
+			console.log('loaded',getCounter);
+			$timeout(loadNext,3000);
+			loadNext();
+			
+			//console.log('gal',$scope.galleries);
 		}
 		//iframe.contentWindow.stop();
 		$scope.$apply();
 	}
-	
+	function loadNext() {
+		console.log('loading next');
+		getCounter++;
+		if(getCounter<$scope.collection.length ){
+			var item = $scope.collection[getCounter];
+			if( item.galleries && item.galleries.length>0){
+				loadNext();
+			}else{
+				if(!item.excluded){
+					$scope.get(item.updates,item.src,item.server);
+				}
+			}
+		}
+	}
 	function onKeyPress(e) {
 		console.log(e,String.fromCharCode(e.keyCode));
 		if(e.code == 'KeyH'){
@@ -159,6 +174,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		}
 		$scope.$apply();
 	}
+	/*
 	function getGalleries() {
 		var galleries =  localStorageService.getKey('galleries');
 		//put loaded galeries
@@ -169,6 +185,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			}
 		}
 	}
+	*/
 	function checkIfNeedsToUpdate() {
 		if(galleriesNeedsToUpdate.length>0){
 			console.log('galleriesNeedsToUpdate');
@@ -220,7 +237,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 			//
 			checkIfNeedsToUpdate();
 			//
-			localStorageService.setKey('collection',$scope.collection);
+			//localStorageService.setKey('collection',$scope.collection);
 			//
 			spliceList();
         }, function(response) {
