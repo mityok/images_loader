@@ -52,13 +52,30 @@ mainApp.controller('ListCtrl', ['$scope','$http', 'localStorageService', '$windo
 		});
 	}
 	$scope.dropPreloadedGalleries = function(){
-		$http({method: 'POST', url: 'server/write_post.php', data: $scope.collection}).
-		then(function(response) {
-			console.log(response);
-        }, function(response) {
-			console.log(response);
-		});
+		myEfficientFn();
 	}
+	var myEfficientFn = debounce(function() {
+			$http({method: 'POST', url: 'server/write_post.php', data: $scope.collection}).
+			then(function(response) {
+				console.log(response);
+			}, function(response) {
+				console.log(response);
+			});
+		}, 5000);
+	function debounce(func, wait, immediate) {
+		var timeout;
+		return function() {
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+	};
 	$scope.clearSession = function(){
 		$http({method: 'GET', url: 'server/test_proxy.php?c=1', cache: false});
 		

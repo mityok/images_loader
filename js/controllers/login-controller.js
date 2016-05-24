@@ -12,7 +12,7 @@ mainApp.controller('LoginCtrl', ['$scope', '$cookies', '$rootScope', '$location'
 			//
 			var now = new Date();
 			var time = now.getTime();
-			time += 60*60 * 1000; // one hour
+			time += 24*60*60 * 1000; // one hour
 			now.setTime(time);
 			//
 			$cookies.put('_galleryInfo',newValue,{expires:now});
