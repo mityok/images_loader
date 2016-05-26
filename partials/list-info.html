@@ -1,13 +1,13 @@
-<div class="slideshow-image-container" title="{{itemId}}">
-	<img class="main-image image-1" ng-src="{{secondImage}}" />
-	<img class="main-image image-0" ng-style="{opacity: nextImageOpacity}" ng-src="{{firstImage}}" />
-</div>
-<div class="slideshow-nav-container">
-	<button ng-click="togglePlay()" class="play">{{playing?'&#10074;&#10074;':'&#9658;'}}</button>
-	<button class="prev" ng-click="prevImage()">&#11013;</button>
-	<button class="next" ng-click="nextImage()" >&#10145;</button>
-	<span class="spacer">
-		<span>{{counter+1}}/{{collection.length}}</span>
-	</span>
-	<button ng-click="goBack()" class="back">&#10149;</button>
+<div>
+	<span>{{start}} to {{start+maxItems}} from {{updates}}</span>
+	<button ng-disabled="start+maxItems>updates" ng-click="more()">next</button>
+	<div>
+		<span class="item" ng-repeat="i in list" title="{{itemId}}">
+			<a href="#/gallery/{{itemId}}/{{serverId}}">
+				<img ng-src="server/get_gallery_thumb.php?s={{serverId}}&n={{itemId}}&g={{i}}&c=1&m=1">
+			</a>
+			<div class="banner">{{arr[i]}} / {{files[i]}}</div>
+			<button class="get" ng-click="getGallery(itemId,serverId,arr[i],i)">dump</button>
+		</span>
+	</div>
 </div>
