@@ -2,7 +2,7 @@
 	<span>{{start}} to {{start+maxItems}} from {{updates}}</span>
 	<button ng-disabled="start+maxItems>updates" ng-click="more()">next</button>
 	<div>
-		<span class="item" ng-repeat="i in list" title="{{itemId}}">
+		<span class="item" ng-repeat="i in store" title="{{itemId}}">
 			<a href="#/gallery/{{itemId}}/{{serverId}}">
 				<img ng-src="server/get_gallery_thumb.php?s={{serverId}}&n={{itemId}}&g={{i}}&c=1&m=1">
 			</a>

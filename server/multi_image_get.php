@@ -1,5 +1,6 @@
 <?php
 include_once("pass.php");
+ini_set('max_execution_time', 300);
 $href = PasswordSingleton::getInstance()->getPassword();
 $proxy = PasswordSingleton::getInstance()->getProxy();
 ini_set('memory_limit', '-1');

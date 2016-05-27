@@ -4,14 +4,17 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	$scope.serverId = $routeParams.serverId;
 	$scope.updates = $routeParams.updates;
 	var pagination = 30;
-	$scope.maxItems = pagination;
+	
 	$scope.start = 1;
 	//470
 	$scope.files=[];
-	$scope.list = [];
+	$scope.store = [];
 	$scope.arr = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId).galleries;
 	$scope.start = getValidStart();
-	createList();
+	$scope.maxItems = Math.min($scope.arr.length - $scope.start ,pagination);
+	//[0,0,0,1,2,3,4,5]	len = 8 , start = 3 maxItems = 5
+	console.log($scope.maxItems);
+	createStore();
 	getImagesStore($scope.itemId, $scope.serverId);
 	function getImagesStore(src, server){
 		$http({method: 'POST', url: 'server/folder_scan.php?s='+src+"&r="+server, data: $scope.arr, cache: false}).
@@ -35,10 +38,10 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 		}
 		return -1;
 	}
-	function createList(){
-		$scope.list = [];
+	function createStore(){
+		$scope.store = [];
 		for(var i = $scope.start;i<$scope.start+$scope.maxItems;i++){
-			$scope.list.push(i);
+			$scope.store.push(i);
 		}
 	}
 
@@ -56,6 +59,6 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	}
 	$scope.more = function(){
 		$scope.maxItems += pagination;
-		createList();
+		createStore();
 	}
 }]);
