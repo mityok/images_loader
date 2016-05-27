@@ -7,11 +7,21 @@ mainApp.config(function($routeProvider) {
     $routeProvider.
       when('/list', {
         templateUrl: 'partials/list.html',
-        controller: 'ListCtrl'
+        controller: 'ListCtrl',
+		resolve: {
+			service: function(dataStorageService){
+				return dataStorageService.getStoredData();
+				}
+			}
       }).
       when('/list/:itemId/:serverId/:updates', {
         templateUrl: 'partials/list-info.html',
-        controller: 'ListInfoCtrl'
+        controller: 'ListInfoCtrl',
+		resolve: {
+			service: function(dataStorageService){
+				return dataStorageService.getStoredData();
+				}
+			}
       }).
 	  when('/gallery/:itemId/:serverId', {
         templateUrl: 'partials/gallery.html',

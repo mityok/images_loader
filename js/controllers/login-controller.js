@@ -21,6 +21,7 @@ mainApp.controller('LoginCtrl', ['$scope', '$cookies', '$rootScope', '$location'
 		}
 	});
 	$scope.clear = function(){
+		$rootScope.currentUser = null;
 		$cookies.remove('_galleryInfo');
 	}
 }]);

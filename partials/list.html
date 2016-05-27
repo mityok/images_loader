@@ -1,13 +1,9 @@
-<div ng-class="{ 'show': imgShow}">
+<div>
 <button ng-disabled="start<=0" ng-click="prev()">prev</button>
 <span>{{start}}/{{total}}</span>
 <button ng-disabled="start+page>total" ng-click="next()">next</button>
-<button ng-click="send()">Click</button>
-<button ng-click="stopIframe()">Stop</button>
-<button ng-click="imgShow=!imgShow">show</button>
-<button ng-click="dropPreloadedGalleries()">Save 2 File</button>
-<button ng-click="loadPreloadedGalleries()">Load Saved</button>
-<button ng-click="clearSession()">Clear Session</button>
+
+
 <div >
 	<span class="item" ng-repeat="item in list track by ( item.src + item.server )" title="{{item.name}} - ({{item.src}})" ng-if="!item.excluded">
 		<a href="#/list/{{item.src}}/{{item.server}}/{{item.updates}}">

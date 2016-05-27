@@ -1,14 +1,16 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', function ($scope, $http,$window, $timeout) {
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', 'dataStorageService',function ($scope, $http,$window, $timeout, dataStorageService) {
 	$scope.start = 0;
 	$scope.page = 50;
 	$scope.itemValidation;
 	$scope.mainImage= null;
 	$scope.latest=[];
+	$scope.dataService = dataStorageService;
 	var storedCollection ,galleriesNeedsToUpdate = [];
 	var iframe;
 	var MAX_PARALLEL_IMAGE_DUMP = 100;
 	var getCounter = 0;
+	var unregisterDataService;
 	$scope.get = function(updates,src,server){
 		iframe.contentWindow.stop();
 		//getting galleries
@@ -26,7 +28,6 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', functio
 	}
 	$scope.dump = function(src,server,galleries){
 		//TODO: set max to 200 units
-		//var total = galleries.reduce(function(a, b) {return a + b;});
 		var total = galleries.reduce(function(a, b) {return a + b;});
 		
 		console.log(total);
@@ -42,44 +43,8 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', functio
 			console.log(response);
 		});
 	}
-	$scope.loadPreloadedGalleries = function(){
-		$http({method: 'GET', url: 'server/read_post.php', data: $scope.collection}).
-		then(function(response) {
-			$scope.collection = response.data.data;
-			spliceList();
-        }, function(response) {
-			console.log(response);
-		});
-	}
-	$scope.dropPreloadedGalleries = function(){
-		myEfficientFn();
-	}
-	var myEfficientFn = debounce(function() {
-			$http({method: 'POST', url: 'server/write_post.php', data: $scope.collection}).
-			then(function(response) {
-				console.log(response);
-			}, function(response) {
-				console.log(response);
-			});
-		}, 5000);
-	function debounce(func, wait, immediate) {
-		var timeout;
-		return function() {
-			var context = this, args = arguments;
-			var later = function() {
-				timeout = null;
-				if (!immediate) func.apply(context, args);
-			};
-			var callNow = immediate && !timeout;
-			clearTimeout(timeout);
-			timeout = setTimeout(later, wait);
-			if (callNow) func.apply(context, args);
-		};
-	};
-	$scope.clearSession = function(){
-		$http({method: 'GET', url: 'server/test_proxy.php?c=1', cache: false});
-		
-	}
+	
+	
 	$scope.prev = function(){
 		$scope.start-=$scope.page;
 		spliceList();
@@ -120,11 +85,9 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', functio
 			return;
 		}
 		var info = JSON.parse(e.data);
-		if(info.type ==="progress"){
+		if(info.type === "progress"){
 			//console.log("message",info.data);
-			var item = $scope.collection.filter(function(value){
-				return value.src == info.data.src && info.data.server == value.server;
-			})[0];
+			var item = dataStorageService.getSelectedItem(info.data.src,info.data.server);
 			if(!item){
 				return;
 			}
@@ -132,27 +95,24 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', functio
 				item.galleries = [];
 			}
 			item.galleries[info.data.position] = info.data.limit;
-			$scope.dropPreloadedGalleries();
-			//console.log("message2",$scope.item);
-			/*
-			if(!$scope.galleries[info.data.src+"_"+info.data.server]){
-				$scope.galleries[info.data.src+"_"+info.data.server]=[];
+			//
+			var filtered = item.galleries.filter(function(value){return value != null;});
+			console.log(filtered.length+"/"+item.updates);
+			if(filtered.length%40===0){
+				dataStorageService.setDebounceData(8000);
 			}
-			$scope.galleries[info.data.src+"_"+info.data.server][info.data.position] = info.data.limit;
-			*/
-			//var obj = {};
-			//obj[info.data.src+"_"+info.data.server]=$scope.galleries[info.data.src+"_"+info.data.server];
-			//localStorageService.addKey('galleries',obj);
 		}else if(info.type === "loaded"){
-			console.log('loaded',getCounter);
-			$timeout(loadNext,3000);
-			loadNext();
+			console.log('loaded');
+			dataStorageService.setDebounceData(0,true);
+			//$timeout(loadNext,8000);
+
 			
 			//console.log('gal',$scope.galleries);
 		}
 		//iframe.contentWindow.stop();
 		$scope.$apply();
 	}
+	/*
 	function loadNext() {
 		console.log('loading next');
 		getCounter++;
@@ -164,24 +124,6 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', functio
 				if(!item.excluded){
 					$scope.get(item.updates,item.src,item.server);
 				}
-			}
-		}
-	}
-	function onKeyPress(e) {
-		console.log(e,String.fromCharCode(e.keyCode));
-		if(e.code == 'KeyH'){
-			$scope.imgShow = !$scope.imgShow;
-		}
-		$scope.$apply();
-	}
-	/*
-	function getGalleries() {
-		var galleries =  localStorageService.getKey('galleries');
-		//put loaded galeries
-		if(galleries){
-			for(var i = 0; i < galleries.length; i++){
-				var valueKey = Object.keys(galleries[i])[0]; 
-				$scope.galleries[valueKey] = galleries[i][valueKey];
 			}
 		}
 	}
@@ -223,29 +165,20 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', functio
 		return !value.excluded;
 	}
 	(function init(){
+		
 		angular.element($window).on('message', onMessage);
-		angular.element($window).on('keypress', onKeyPress);
 		iframe = document.getElementById('frm');
-		//
-		//getGalleries();
-		//
-		$http({method: 'GET', url: 'server/exist_multi_start.php', cache: false}).
-        then(function(response) {
-			
-			$scope.collection = response.data.items.filter(isIncluded);
-			$scope.total = $scope.collection.length;
-			//
-			checkIfNeedsToUpdate();
-			//
-			//localStorageService.setKey('collection',$scope.collection);
-			//
-			spliceList();
-        }, function(response) {
-			console.log(response);
+		
+		unregisterDataService = $scope.$watch('dataService.getData()', function(newVal) {
+			if(newVal){
+				$scope.collection = newVal;
+				$scope.total= $scope.collection.length;
+				spliceList();
+			}
 		});
 	})();
 	$scope.$on('$destroy', function () {
+		unregisterDataService();
 		angular.element($window).off('message', onMessage);
-		angular.element($window).off('keypress', onKeyPress);
 	});
 }]);

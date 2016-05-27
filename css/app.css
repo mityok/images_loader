@@ -64,10 +64,7 @@ img{
 	left: 0;
     background: rgba(55,55,55,55);
 }
-.slideshow-image-container img.main-image{
-	-webkit-filter: none;
-	opacity:1;
-}
+
 .slideshow-nav-container{
 	background: rgba(20,20,20,0.5);
 	position:absolute;
