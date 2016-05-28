@@ -10,6 +10,8 @@ ini_set('max_execution_time', 3000);
 //4 - 64.158.31.143 64.158.31.142
 //search - 64.158.31.148
 $limit = (int)htmlspecialchars($_GET["l"]);
+$start = (int)htmlspecialchars($_GET["b"]);
+$page = (int)htmlspecialchars($_GET["p"]);
 $server = htmlspecialchars($_GET["s"]);
 $name = htmlspecialchars($_GET["n"]);
 $href = isset($_GET['href'])?htmlspecialchars($_GET["href"]):'';
@@ -19,7 +21,7 @@ $mh = curl_multi_init();
 $ch = array();
 
 $list = array();
-for ($i = 0; $i <= $limit; $i++) {
+for ($i = $start; $i < min($start+$page,$limit+1); $i++) {
 	$r=NULL;
 	$resp =NULL;
 	if($i>0){
@@ -29,7 +31,8 @@ for ($i = 0; $i <= $limit; $i++) {
 		$data[] = $resp;
 		usleep(1000);
 	}	
-	$list[$i] = ($r && $resp)?($resp -> limit):null;
+	//$list[$i] = ($r && $resp)?($resp -> limit):null;
+	$list[] = ($r && $resp)?($resp -> limit):null;
 }
 
 $aft = microtime(TRUE) - $bef;
@@ -38,5 +41,5 @@ header('Content-Type: application/json');
 header('Duration: '.$aft);
 
 //echo json_encode(array('data'=>$data, 'list'=>$list,'time'=>$aft));
-echo json_encode(array('list'=>$list,'time'=>$aft,'src'=>$name,'server'=>$server));
+echo json_encode(array('list'=>$list,'time'=>$aft,'src'=>$name,'server'=>$server,'start'=>$start,'limit'=>$limit));
 ?>

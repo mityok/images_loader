@@ -9,6 +9,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var storedCollection ,galleriesNeedsToUpdate = [];
 	var iframe;
 	var MAX_PARALLEL_IMAGE_DUMP = 100;
+	var MAX_SEQUENTIAL_GET = 50;
 	var getCounter = 0;
 	var unregisterDataService;
 	$scope.get = function(updates,src,server){
@@ -16,21 +17,29 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		//iframe.contentWindow.stop();
 		//$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 		//getting galleries remote
+		doBatchLoading(0,updates,src,server);
 		
-		$http({method: 'GET', withCredentials: true,url: 'http://mityok.hostfree.pw/sc/trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&rnd='+Math.random()}).
+	}
+	function doBatchLoading(start, updates,src,server){
+		$http({method: 'GET', withCredentials: true,url: 'http://mityok.hostfree.pw/sc/trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
-
-			console.log(response.data.time, response.data.list,response.data.src,response.data.server);
+			// 0 50
+			console.log(response.data.time, response.data.list,response.data.src,response.data.server,response.data.limit,response.data.start);
 			var item = dataStorageService.getSelectedItem(response.data.src,response.data.server);
 			if(!item){
 				return;
 			}
-
-			item.galleries = response.data.list;
+			if(!item.galleries || response.data.start === 0){
+				item.galleries = [];
+			}
+			item.galleries = item.galleries.concat(response.data.list);
 			//
 			var filtered = item.galleries.filter(function(value){return value != null;});
 			console.log(filtered.length+"/"+item.updates);
-			dataStorageService.setDebounceData(0,true);
+			dataStorageService.setDebounceData(8000);
+			if(response.data.start+MAX_SEQUENTIAL_GET<response.data.limit){
+				doBatchLoading(response.data.start+MAX_SEQUENTIAL_GET,response.data.limit,response.data.src,response.data.server);
+			}
         }, function(response) {
 			console.log(response);
 		});
