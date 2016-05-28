@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', 'dataStorageService',function ($scope, $http,$window, $timeout, dataStorageService) {
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService',function ($scope, $http,$window, $timeout, $rootScope, dataStorageService) {
 	$scope.start = 0;
 	$scope.page = 50;
 	$scope.itemValidation;
@@ -12,9 +12,28 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', 'dataSt
 	var getCounter = 0;
 	var unregisterDataService;
 	$scope.get = function(updates,src,server){
-		iframe.contentWindow.stop();
-		//getting galleries
-		$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
+		//getting galleries iframe
+		//iframe.contentWindow.stop();
+		//$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
+		//getting galleries remote
+		
+		$http({method: 'GET', withCredentials: true,url: 'http://mityok.hostfree.pw/sc/trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&rnd='+Math.random()}).
+		then(function(response) {
+
+			console.log(response.data.time, response.data.list,response.data.src,response.data.server);
+			var item = dataStorageService.getSelectedItem(response.data.src,response.data.server);
+			if(!item){
+				return;
+			}
+
+			item.galleries = response.data.list;
+			//
+			var filtered = item.galleries.filter(function(value){return value != null;});
+			console.log(filtered.length+"/"+item.updates);
+			dataStorageService.setDebounceData(0,true);
+        }, function(response) {
+			console.log(response);
+		});
 	}
 	function clipPage(arr, start, limit){
 		var sum = 0;
