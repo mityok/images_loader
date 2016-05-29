@@ -9,7 +9,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var storedCollection ,galleriesNeedsToUpdate = [];
 	var iframe;
 	var MAX_PARALLEL_IMAGE_DUMP = 100;
-	var MAX_SEQUENTIAL_GET = 50;
+	var MAX_SEQUENTIAL_GET = 40;
 	var getCounter = 0;
 	var unregisterDataService;
 	$scope.get = function(updates,src,server){
@@ -21,7 +21,9 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		
 	}
 	function doBatchLoading(start, updates,src,server){
-		$http({method: 'GET', withCredentials: true,url: 'http://mityok.hostfree.pw/sc/trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
+		var host = 'http://mityok.hostfree.pw/sc/';
+		host = 'remote/';
+		$http({method: 'GET', withCredentials: true,url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
 			// 0 50
 			console.log(response.data.time, response.data.list,response.data.src,response.data.server,response.data.limit,response.data.start);

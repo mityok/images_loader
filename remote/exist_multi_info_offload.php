@@ -7,6 +7,13 @@ $href = isset($_GET['href'])?htmlspecialchars($_GET["href"]):'';
 $size = isset($_GET['z'])?(int)htmlspecialchars($_GET["z"]):50;
 $start = isset($_GET['t'])?(int)htmlspecialchars($_GET["t"]):0;
 $bef = microtime(TRUE);
+$proxy=NULL;
+//
+if (substr($_SERVER['REMOTE_ADDR'], 0, 4) == '127.'
+        || $_SERVER['REMOTE_ADDR'] == '::1') {
+	include_once("../server/pass.php");
+	$proxy = PasswordSingleton::getInstance()->getProxy();
+}
 //
 $mh = curl_multi_init();
 $ch = array();
@@ -19,6 +26,7 @@ for ($i = $start; $i < $start + $size; $i++) {
 	curl_setopt($ch_1, CURLOPT_HEADER, true);
 	curl_setopt($ch_1, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch_1, CURLOPT_TIMEOUT, 20);
+	curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
 	curl_multi_add_handle($mh, $ch_1);
 	$ch[] = $ch_1;
 }
