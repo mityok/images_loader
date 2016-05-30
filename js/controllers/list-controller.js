@@ -22,7 +22,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	}
 	function doBatchLoading(start, updates,src,server){
 		var host = 'http://mityok.hostfree.pw/sc/';
-		host = 'remote/';
+		//host = 'remote/';
 		$http({method: 'GET', withCredentials: true,url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
 			// 0 50
@@ -103,7 +103,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	$scope.exclude = function(item){
 		item.excluded = true;
 		spliceList();
-		$scope.dropPreloadedGalleries();
+		dataStorageService.setDebounceData(0,true);
 	}
 
 	//pagination split

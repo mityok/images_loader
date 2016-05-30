@@ -25,8 +25,8 @@ for ($i = $start; $i < $start + $size; $i++) {
 	curl_setopt($ch_1, CURLOPT_NOBODY, true);
 	curl_setopt($ch_1, CURLOPT_HEADER, true);
 	curl_setopt($ch_1, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch_1, CURLOPT_TIMEOUT, 20);
-	curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
+	curl_setopt($ch_1, CURLOPT_TIMEOUT, 200);
+	//curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
 	curl_multi_add_handle($mh, $ch_1);
 	$ch[] = $ch_1;
 }
@@ -44,7 +44,7 @@ for ($i = 0; $i < $len; $i++) {
 	}else{
 		$r = curl_multi_getcontent($ch[$i]);
 		$urls[]=$r;
-		$pos = strrpos($r, "200");
+
 		if(strrpos($r, "200") !== FALSE){
 			$d = array('pass'=>$i);
 			$limit = $i+1;
@@ -64,5 +64,5 @@ $aft = microtime(TRUE) - $bef;
 header('Content-Type: application/json');
 header('Duration: '.$aft);
 echo json_encode(array("limit"=>$limit,"gal"=>$gal,'time'=>$aft));
-//echo json_encode(array('data'=>$data,'time'=>$aft,'start'=>$start,'size'=>$size));
+//echo json_encode(array('data'=>$data,'time'=>$aft,'urls'=>$urls));
 ?>

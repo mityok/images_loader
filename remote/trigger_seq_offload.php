@@ -20,9 +20,11 @@ $bef = microtime(TRUE);
 $mh = curl_multi_init();
 $ch = array();
 $remote_url = 'http://mityok.hostfree.pw/sc/';
+$remote_url = 'http://mityok.atwebpages.com/sc/';
 if (substr($_SERVER['REMOTE_ADDR'], 0, 4) == '127.'
         || $_SERVER['REMOTE_ADDR'] == '::1') {
 	$remote_url = 'http://localhost:9090/images_loader/remote/';
+	$remote_url = 'http://localhost/images_loader/remote/';
     // code for localhost here
 }
 $list = array();
