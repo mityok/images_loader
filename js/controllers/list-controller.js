@@ -13,19 +13,26 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var getCounter = 0;
 	var unregisterDataService;
 	var errorCount = 0;
-	$scope.get = function(updates,src,server){
+	$scope.loadingItem = null;
+	$scope.get = function(item){
 		//getting galleries iframe
 		//iframe.contentWindow.stop();
 		//$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 		//getting galleries remote
-		errorCount = 0;
-		doBatchLoading(0,updates,src,server);
+		$scope.loadingItem = item;
 		
+		console.log(item);
+		errorCount = 0;
+		doBatchLoading(0,item.updates,item.src,item.server);
+		
+	}
+	$scope.itemLoading = function(item){
+		return item === $scope.loadingItem;
 	}
 	function doBatchLoading(start, updates,src,server){
 		var host = 'http://mityok.hostfree.pw/sc/';
 		var host = 'http://mityok.byethost4.com/sc/';
-		var host = 'http://mityok.rf.gd/sc/';
+		//var host = 'http://mityok.rf.gd/sc/';
 		//host = 'remote/';
 		$http({method: 'GET', withCredentials: true, url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
@@ -45,12 +52,15 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 			dataStorageService.setDebounceData(8000);
 			if(response.data.start+MAX_SEQUENTIAL_GET<response.data.limit){
 				doBatchLoading(response.data.start+MAX_SEQUENTIAL_GET,response.data.limit,response.data.src,response.data.server);
+			}else{
+				$scope.loadingItem = null;
 			}
         }, function(response) {
 			errorCount++;
 			if(errorCount<5){
 				doBatchLoading(start,updates,src,server);
 			}else{
+				$scope.loadingItem = null;
 				console.log('too many errors');
 			}
 			console.log(response);
@@ -66,6 +76,13 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		}
 		return arr.length;
 	}
+	$scope.gallerieReduce = function(galleries){
+		if(!galleries){
+			return -1;
+		}
+		return galleries.filter(function(value){return value != null;}).length;
+	}
+	/*
 	$scope.dump = function(src,server,galleries){
 		//TODO: set max to 200 units
 		var total = galleries.reduce(function(a, b) {return a + b;});
@@ -83,7 +100,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 			console.log(response);
 		});
 	}
-	
+	*/
 	
 	$scope.prev = function(){
 		$scope.start-=$scope.page;
@@ -120,38 +137,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	function spliceList(){
 		$scope.list = $scope.collection.slice($scope.start,$scope.start + $scope.page);
 	}
-	function onMessage(e){
-		if(!e.data){
-			return;
-		}
-		var info = JSON.parse(e.data);
-		if(info.type === "progress"){
-			//console.log("message",info.data);
-			var item = dataStorageService.getSelectedItem(info.data.src,info.data.server);
-			if(!item){
-				return;
-			}
-			if(!item.galleries){
-				item.galleries = [];
-			}
-			item.galleries[info.data.position] = info.data.limit;
-			//
-			var filtered = item.galleries.filter(function(value){return value != null;});
-			console.log(filtered.length+"/"+item.updates);
-			if(filtered.length%40===0){
-				dataStorageService.setDebounceData(8000);
-			}
-		}else if(info.type === "loaded"){
-			console.log('loaded');
-			dataStorageService.setDebounceData(0,true);
-			//$timeout(loadNext,8000);
-
-			
-			//console.log('gal',$scope.galleries);
-		}
-		//iframe.contentWindow.stop();
-		$scope.$apply();
-	}
+	
 	/*
 	function loadNext() {
 		console.log('loading next');
@@ -205,10 +191,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		return !value.excluded;
 	}
 	(function init(){
-		document.title = "This is the new page title.";
-		angular.element($window).on('message', onMessage);
-		iframe = document.getElementById('frm');
-		
+		document.title = "This is the new page title.";		
 		unregisterDataService = $scope.$watch('dataService.getData()', function(newVal) {
 			if(newVal){
 				$scope.collection = newVal;
@@ -219,6 +202,5 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	})();
 	$scope.$on('$destroy', function () {
 		unregisterDataService();
-		angular.element($window).off('message', onMessage);
 	});
 }]);

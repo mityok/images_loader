@@ -15,7 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
-	<div ng-class="{ 'show': imgShow}">
+	<div ng-class="{ 'show': imgShow}" class="main-container">
 		<div class="side-menu" ng-include="'partials/menu.html'" ng-controller="MenuCtrl" ng-class="{ 'menu-show': menuShow}"></div>
 		<div ng-view class="main-view"></div>
 	</div>
