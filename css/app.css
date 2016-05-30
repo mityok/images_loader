@@ -7,9 +7,50 @@ body, html{
 body{
 	background-color:#eee;
 }
+button{
+	border: 0;
+    padding: 0;
+	background:none;
+}
 img{
 	-webkit-filter: invert(1) blur(10px);
 	opacity:0.1;
+}
+i{
+	font-size:34px;
+	font-style: normal;
+	width:50px;
+	height:50px;
+	display: inline-block;
+}
+.side-menu{
+	position: absolute;
+    top: 0;
+    bottom: auto;
+    background: blue;
+    left: 0;
+    z-index: 1;
+}
+.side-menu.menu-show{
+	bottom: 0;
+}
+.side-menu.menu-show .button-list{
+	display:block;
+}
+.side-menu .button-list{
+	display:none;
+}
+.side-menu button{
+	display:block;
+}
+.nav-bar{
+	padding-left:50px;
+	padding-left: 50px;
+    height: 50px;
+    display: flex;
+}
+.nav-bar > button{
+flex: 0 0 50px;
 }
 .item img{
 	height: 150px;

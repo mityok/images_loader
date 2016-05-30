@@ -1,6 +1,8 @@
 <div>
-	<span>{{start}} to {{start+maxItems}} from {{updates}}</span>
-	<button ng-disabled="start+maxItems>updates" ng-click="more()">next</button>
+	<div class="nav-bar">
+		<span>{{start}} to {{start+maxItems}} from {{updates}}</span>
+		<button ng-disabled="start+maxItems>updates" ng-click="more()">next</button>
+	</div>
 	<div>
 		<span class="item" ng-repeat="i in store" title="{{itemId}}">
 			<a href="#/gallery/{{itemId}}/{{serverId}}">

@@ -26,7 +26,7 @@ for ($i = $start; $i < $start + $size; $i++) {
 	curl_setopt($ch_1, CURLOPT_HEADER, true);
 	curl_setopt($ch_1, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch_1, CURLOPT_TIMEOUT, 200);
-	//curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
+	curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
 	curl_multi_add_handle($mh, $ch_1);
 	$ch[] = $ch_1;
 }

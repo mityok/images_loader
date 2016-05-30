@@ -1,4 +1,6 @@
-Header add Access-Control-Allow-Origin "http://localhost"
+#Header add Access-Control-Allow-Origin "http://localhost:9090"
+SetEnvIf Origin "^http(s)?://(.+\.)?(localhost|stackoverflow.com|example1.com)(:[0-9]+)?$" origin_is=$0
+Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
 Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
-Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE"
 Header add Access-Control-Allow-Credentials "true"

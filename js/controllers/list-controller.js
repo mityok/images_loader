@@ -12,18 +12,22 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var MAX_SEQUENTIAL_GET = 40;
 	var getCounter = 0;
 	var unregisterDataService;
+	var errorCount = 0;
 	$scope.get = function(updates,src,server){
 		//getting galleries iframe
 		//iframe.contentWindow.stop();
 		//$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
 		//getting galleries remote
+		errorCount = 0;
 		doBatchLoading(0,updates,src,server);
 		
 	}
 	function doBatchLoading(start, updates,src,server){
 		var host = 'http://mityok.hostfree.pw/sc/';
+		var host = 'http://mityok.byethost4.com/sc/';
+		var host = 'http://mityok.rf.gd/sc/';
 		//host = 'remote/';
-		$http({method: 'GET', withCredentials: true,url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
+		$http({method: 'GET', withCredentials: true, url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
 			// 0 50
 			console.log(response.data.time, response.data.list,response.data.src,response.data.server,response.data.limit,response.data.start);
@@ -43,6 +47,12 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 				doBatchLoading(response.data.start+MAX_SEQUENTIAL_GET,response.data.limit,response.data.src,response.data.server);
 			}
         }, function(response) {
+			errorCount++;
+			if(errorCount<5){
+				doBatchLoading(start,updates,src,server);
+			}else{
+				console.log('too many errors');
+			}
 			console.log(response);
 		});
 	}
@@ -195,7 +205,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		return !value.excluded;
 	}
 	(function init(){
-		
+		document.title = "This is the new page title.";
 		angular.element($window).on('message', onMessage);
 		iframe = document.getElementById('frm');
 		
