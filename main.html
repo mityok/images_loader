@@ -17,11 +17,10 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
-	<iframe id="frm" style="width:1px;height:1px;border:none;" sandbox="allow-forms" ng-src="{{itemValidation}}"></iframe>
+	<iframe id="frm" style="width:1px;height:1px;border:none;position: absolute;" sandbox="allow-forms" ng-src="{{itemValidation}}"></iframe>
 	<div ng-class="{ 'show': imgShow}" class="main-container">
 		<div class="side-menu" ng-include="'partials/menu.html'" ng-controller="MenuCtrl" ng-class="{ 'menu-show': menuShow}"></div>
 		<div ng-view class="main-view"></div>
 	</div>
-	
 </body>
 </html>
