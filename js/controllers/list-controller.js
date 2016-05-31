@@ -171,33 +171,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 			
 		}
 	}
-	function isIncluded(value) {
-		var dt = new Date();
-		if(value.date.toUpperCase() === 'TODAY'){
-			value.date = dt;
-		}else if(value.date.toUpperCase() === 'YESTERDAY'){
-			dt.setDate(dt.getDate() - 1);
-			value.date = dt;
-		}else if(value.date.toUpperCase() === 'NEW'){
-			value.date = new Date("Jan 1 1970");
-		}else{
-			value.date = new Date(value.date);
-		}
-		value.updates = parseInt(value.updates);
-		//
-		if(storedCollection){
-			for (var i=0;i<storedCollection.length;i++){
-				if(storedCollection[i].src === value.src && storedCollection[i].server === value.server){
-					var storedDate = new Date(storedCollection[i].date);
-					if(Math.abs(value.date.getTime() - storedDate.getTime())>1000 * 3600 * 12 || value.updates > storedCollection[i].updates){
-						galleriesNeedsToUpdate.push(value);
-					}
-				}
-			}
-		}
-		//
-		return !value.excluded;
-	}
+	
 	(function init(){
 		document.title = "This is the new page title.";		
 		unregisterDataService = $scope.$watch('dataService.getData()', function(newVal) {

@@ -2,17 +2,46 @@
 
 mainApp.service('dataStorageService',function($http, $q){
 	var list = null;
-	
+	function updateValues(value) {
+		var dt = new Date();
+		if(value.date.toUpperCase() === 'TODAY'){
+			value.date = dt;
+		}else if(value.date.toUpperCase() === 'YESTERDAY'){
+			dt.setDate(dt.getDate() - 1);
+			value.date = dt;
+		}else if(value.date.toUpperCase() === 'NEW'){
+			value.date = new Date("Jan 1 1970");
+		}else{
+			value.date = new Date(value.date);
+		}
+		value.updates = parseInt(value.updates);
+		//
+	}
 	this.loadFromNet = function(){
+		var that = this;
 		$http({method: 'GET', url: 'server/exist_multi_start.php', cache: false}).
         then(function(response) {
-			
+			var items = response.data.items;
+			console.log(items);
+			for(var i = 0;i < items.length; i++){
+				updateValues(items[i]);
+				var selectedItem = that.getSelectedItem(items[i].src, items[i].server);
+				if(selectedItem){
+					if(items[i].updates > selectedItem.updates){
+						selectedItem.updates = items[i].updates;
+						selectedItem.date = items[i].date;
+						console.log('larger',selectedItem,items[i]);
+					}
+				}else{
+					list.push(items[i]);
+					console.log('new',items[i]);
+				}
+			}
 			//$scope.collection = response.data.items.filter(isIncluded);
 			//$scope.total = $scope.collection.length;
 			//
 			//checkIfNeedsToUpdate();
 			//
-			spliceList();
         }, function(response) {
 			console.log(response);
 		});
@@ -50,11 +79,10 @@ mainApp.service('dataStorageService',function($http, $q){
 			_this.setData();
 		}, wait,immediate)();
 	}
-	this.getSelectedItem=function(src,server){
+	this.getSelectedItem = function(src,server){
 		if(!list){
 			return null;
 		}
-
 		return list.filter(function(item){
 			return item.src == src && server == item.server;
 		})[0];
