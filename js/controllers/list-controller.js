@@ -15,6 +15,9 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var errorCount = 0;
 	$scope.loadingItem = null;
 
+	$scope.notAllLoaded = function(item){
+		return item.updates>(item.galleries?(item.galleries.length-1):-1);
+	}
 	$scope.get = function(item){
 		//getting galleries iframe
 		//iframe.contentWindow.stop();

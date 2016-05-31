@@ -103,8 +103,8 @@ i{
 	background-color: rgba(255,255,255,0.5);
 	word-break: break-all;
 }
-.item .info-banner{
-	
+.item .item-counter.alert{
+	background-color: rgba(255,0,0,0.7);
 }
 .fav:after{
 	content: "\2627";

@@ -9,6 +9,7 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 		angular.element($window).on('message', onMessage);
 		$timeout(function(){
 			console.log('close');
+			$rootScope.itemValidation = '';
 		},10000);
 	}
 	function onMessage(e){
