@@ -2,11 +2,13 @@
 <html ng-app="mainApp">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <script type="text/javascript" src="https://code.angularjs.org/1.5.5/angular.js"></script>
-	<script type="text/javascript" src="https://code.angularjs.org/1.5.5/angular-route.min.js"></script>
-	<script type="text/javascript" src="https://code.angularjs.org/1.5.5/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="libs/angular.min.js"></script>
+	<script type="text/javascript" src="libs/angular-route.min.js"></script>
+	<script type="text/javascript" src="libs/angular-cookies.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/services/data-storage-service.js"></script>
+	<script src="js/services/visibility-service.js"></script>
+	<script src="js/services/server-status-service.js"></script>
 	<script src="js/controllers/list-controller.js"></script>
 	<script src="js/controllers/list-info-controller.js"></script>
 	<script src="js/controllers/gallery-controller.js"></script>
@@ -15,9 +17,11 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
+	<iframe id="frm" style="width:1px;height:1px;border:none;" sandbox="allow-forms" ng-src="{{itemValidation}}"></iframe>
 	<div ng-class="{ 'show': imgShow}" class="main-container">
 		<div class="side-menu" ng-include="'partials/menu.html'" ng-controller="MenuCtrl" ng-class="{ 'menu-show': menuShow}"></div>
 		<div ng-view class="main-view"></div>
 	</div>
+	
 </body>
 </html>

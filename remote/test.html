@@ -1,0 +1,54 @@
+<html>
+<head>
+</head>
+<body>
+<script>
+function receiveMessage(){
+//
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	var q={};
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		q[pair[0]] = pair[1];
+	}
+//
+
+	console.log('inited',q);
+	var xmlhttp = new XMLHttpRequest();
+	var url = window.location.protocol+"//"+window.location.host+"/sc/exist_multi_info_offload.php?href="+q.href+"&n="+q.src+"&s="+q.server+"&g="+q.gallery+"&z="+q.size+"&rnd="+Math.random();
+	console.log(url);
+	xmlhttp.open('GET', url, false);
+	xmlhttp.onload = function() {
+		console.log('load');
+		var message='error';
+		if(xmlhttp.status == 200){
+			var value = null;
+			console.log(xmlhttp.responseText);
+			try{
+				value = JSON.parse(xmlhttp.responseText);
+			}catch(e){
+				console.log(e);
+			}
+			if(value && value.limit){
+				console.log('ok');
+				window.parent.postMessage(JSON.stringify({'message':'ok','value':value.limit}),"*");
+				return;
+			}else{
+				console.log('err');
+				window.parent.postMessage(JSON.stringify({'message':'error','value':xmlhttp.responseText}),"*");
+			}
+		}else{
+			console.log('err');
+			window.parent.postMessage(JSON.stringify({'message':'error'}),"*");
+		}
+	}
+	xmlhttp.onerror = function(e){
+		console.log('err');
+	}; 
+	xmlhttp.send();
+}
+receiveMessage();
+</script>
+</body>
+</html>

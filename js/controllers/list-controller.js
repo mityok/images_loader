@@ -1,8 +1,8 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService',function ($scope, $http,$window, $timeout, $rootScope, dataStorageService) {
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'visibilityService', 'serverStatusService', function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, visibilityService, serverStatusService) {
 	$scope.start = 0;
 	$scope.page = 50;
-	$scope.itemValidation;
+
 	$scope.mainImage= null;
 	$scope.latest=[];
 	$scope.dataService = dataStorageService;
@@ -14,6 +14,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var unregisterDataService;
 	var errorCount = 0;
 	$scope.loadingItem = null;
+
 	$scope.get = function(item){
 		//getting galleries iframe
 		//iframe.contentWindow.stop();
@@ -32,7 +33,10 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	function doBatchLoading(start, updates,src,server){
 		var host = 'http://mityok.hostfree.pw/sc/';
 		var host = 'http://mityok.byethost4.com/sc/';
-		//var host = 'http://mityok.rf.gd/sc/';
+		var host = 'http://mityok.rf.gd/sc/';
+		//var host = 'http://mityok.xp3.biz/sc/';
+		//var host = 'http://mityok.freehost.tech/sc/';
+		//var host = 'http://mityok.esy.es/sc/';//max seq needs to be low, doesn't work well with large requests
 		//host = 'remote/';
 		$http({method: 'GET', withCredentials: true, url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
@@ -51,6 +55,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 			console.log(filtered.length+"/"+item.updates);
 			dataStorageService.setDebounceData(8000);
 			if(response.data.start+MAX_SEQUENTIAL_GET<response.data.limit){
+				errorCount = 0;
 				doBatchLoading(response.data.start+MAX_SEQUENTIAL_GET,response.data.limit,response.data.src,response.data.server);
 			}else{
 				$scope.loadingItem = null;

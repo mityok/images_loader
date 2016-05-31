@@ -24,6 +24,10 @@ $remote_url = 'http://mityok.atwebpages.com/sc/';
 $remote_url = 'http://mityok.byethost4.com/sc/';
 $remote_url = 'http://mityok.rf.gd/sc/';
 $remote_url = 'http://mityok.biz.ht/sc/';
+$remote_url = 'http://mityok.co.nf/sc/';
+$remote_url = 'http://mityok.xp3.biz/sc/';
+$remote_url = 'http://mityok.freehost.tech/sc/';
+$remote_url = 'http://mityok.esy.es/sc/';
 if (substr($_SERVER['REMOTE_ADDR'], 0, 4) == '127.'
         || $_SERVER['REMOTE_ADDR'] == '::1') {
 	$remote_url = 'http://localhost:9090/images_loader/remote/';
