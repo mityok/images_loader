@@ -4,7 +4,7 @@ $bef = microtime(TRUE);
 $href = PasswordSingleton::getInstance()->getPassword();
 $proxy = PasswordSingleton::getInstance()->getProxy();
 $start=isset($_GET['s'])?htmlspecialchars($_GET["s"]):0;
-$end=isset($_GET['e'])?htmlspecialchars($_GET["e"]):500;
+$end=isset($_GET['e'])?htmlspecialchars($_GET["e"]):600;
 $page=isset($_GET['p'])?htmlspecialchars($_GET["p"]):25;
 $name = isset($_GET['n'])?'&Name='.htmlspecialchars($_GET["n"]):'';
 //

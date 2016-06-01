@@ -5,6 +5,7 @@ $href = PasswordSingleton::getInstance()->getPassword();
 
 $server=isset($_GET['s'])?htmlspecialchars($_GET["s"]):0;
 $name=isset($_GET['n'])?htmlspecialchars($_GET["n"]):'img';
+$img=isset($_GET['i'])?htmlspecialchars($_GET["i"]):NULL;
 $href="http://www.".$href.($server>0?$server:'').".com";
 $ending = "1.jpg";
 $folder = "thumbs";
@@ -26,7 +27,7 @@ if(file_exists($link) && @getimagesize($link)){
 		$context = stream_context_create(array('http'=>array('method'=>"GET",'proxy' => $proxy)));
 	}
 	header("Internet: true");
-	$data = file_get_contents("$href/$name$ending",false, $context);
+	$data = file_get_contents("$href/".($img?$img:$name)."$ending",false, $context);
 	if(!is_dir("../$folder/$server_folder/$name")) mkdir("../$folder/$server_folder/$name", 0777, true);
 	file_put_contents($link, $data);
 }
