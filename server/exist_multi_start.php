@@ -6,6 +6,7 @@ $proxy = PasswordSingleton::getInstance()->getProxy();
 $start=isset($_GET['s'])?htmlspecialchars($_GET["s"]):0;
 $end=isset($_GET['e'])?htmlspecialchars($_GET["e"]):500;
 $page=isset($_GET['p'])?htmlspecialchars($_GET["p"]):25;
+$name = isset($_GET['n'])?'&Name='.htmlspecialchars($_GET["n"]):'';
 //
 $errors = NULL;
 set_error_handler('exceptions_error_handler');
@@ -30,7 +31,7 @@ for ($i = $start; $i < $end; $i += $page) {
 	$ch_1 = curl_init($url);
 	curl_setopt($ch_1, CURLOPT_POST, 1);
 	curl_setopt($ch_1, CURLOPT_HEADER, 1);
-	curl_setopt($ch_1, CURLOPT_POSTFIELDS,"startitem=".$i);
+	curl_setopt($ch_1, CURLOPT_POSTFIELDS,"startitem=".$i.$name);
 	curl_setopt($ch_1, CURLOPT_PROXY, $proxy);
 	curl_setopt($ch_1, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch_1, CURLOPT_TIMEOUT, 25);
@@ -107,6 +108,9 @@ function parse($resp, $ch){
 			$pos2 = strrpos($src, $href);
 			if($pos !== FALSE && $pos2 !== FALSE){
 				$item = array();
+				//image name dosn't correspond with folder
+				$link = explode('/',$tag->parentNode->getAttribute('href'))[3];
+				//
 				$imgPhTr = $tag->parentNode->parentNode->parentNode;
 				$nameTr = $imgPhTr->previousSibling;
 				$ageTr = $imgPhTr->nextSibling;
@@ -115,7 +119,11 @@ function parse($resp, $ch){
 				$url = explode('/',$src);
 				//$item['href'] = $url[2];
 				$item['server'] = abs((int)filter_var($url[2], FILTER_SANITIZE_NUMBER_INT));
-				$item['src'] = substr($url[3],0,-5);
+				$imgSrc = substr($url[3],0,-5);
+				if($imgSrc!==$link){
+					$item['imgsrc'] = $imgSrc;
+				}
+				$item['src'] = $link;
 
 				$item['age'] = $ageTr->childNodes[1]->textContent;
 				$item['updates'] = $updatesTr->childNodes[1]->textContent;
