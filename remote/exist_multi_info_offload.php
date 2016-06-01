@@ -36,6 +36,7 @@ do {
 } while ($running);
 $data = array();
 $len = count($ch);
+
 for ($i = 0; $i < $len; $i++) {
 	$info = curl_multi_info_read($mh);
 	$d = NULL;
@@ -63,6 +64,6 @@ $aft = microtime(TRUE) - $bef;
 //echo $aft;
 header('Content-Type: application/json');
 header('Duration: '.$aft);
-echo json_encode(array("limit"=>$limit,"gal"=>$gal,'time'=>$aft));
+echo json_encode(array("limit"=>$limit,"gal"=>$gal,'time'=>$aft,'length'=>$len));
 //echo json_encode(array('data'=>$data,'time'=>$aft,'urls'=>$urls));
 ?>

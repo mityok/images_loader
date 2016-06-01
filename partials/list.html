@@ -6,7 +6,7 @@
 		</a>
 		<div class="info-banner"><div ng-class="{'fav':item.ph=='Yes'}">{{item.src}}</div><div>{{item.date | date:'dd/MM/yyyy'}}<span>{{item.age}}</span></div></div>
 		<button class="exclude" ng-click="exclude(item)">&#9746;</button>
-		<div class="item-counter" ng-click="get(item)" ng-class="{'alert': notAllLoaded(item)}">{{item.updates}}/{{item.galleries?(item.galleries.length-1):-1}}/{{gallerieReduce(item.galleries)}}</div>
+		<div class="item-counter" ng-click="get(item)" ng-class="{'alert': notAllLoaded(item),'warning':(galleryReduce(item.galleries)<item.updates)}">{{item.updates}}/{{item.galleries?(item.galleries.length-1):-1}}/{{galleryReduce(item.galleries)}}</div>
 		<div class="preloader" ng-if="itemLoading(item)"><span>&#8987;</span></div>
 	</span>
 </div>

@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'visibilityService', 'serverStatusService', function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, visibilityService, serverStatusService) {
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'visibilityService', 'serverStatusService','$q' , function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, visibilityService, serverStatusService, $q) {
 	$scope.start = 0;
 	$scope.page = 50;
 
@@ -14,33 +14,52 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var unregisterDataService;
 	var errorCount = 0;
 	$scope.loadingItem = null;
-
-	$scope.notAllLoaded = function(item){
-		return item.updates>(item.galleries?(item.galleries.length-1):-1);
-	}
+	var nullGalleries = 0;
+	var host = 'http://mityok.hostfree.pw/sc/';
+	var host = 'http://mityok.byethost4.com/sc/';
+	//var host = 'http://mityok.rf.gd/sc/';
+	//var host = 'http://mityok.xp3.biz/sc/';
+	//var host = 'http://mityok.freehost.tech/sc/';
+	//var host = 'http://mityok.esy.es/sc/';//max seq needs to be low, doesn't work well with large requests
+	//host = 'remote/';
 	$scope.get = function(item){
-		//getting galleries iframe
-		//iframe.contentWindow.stop();
-		//$scope.itemValidation = "client_multi.html?updates="+updates+"&src="+src+"&server="+server+"&rnd="+Math.random();
-		//getting galleries remote
-		$scope.loadingItem = item;
-		
-		console.log(item);
-		errorCount = 0;
-		doBatchLoading(0,item.updates,item.src,item.server);
-		
+			
+		nullGalleries = 0;
+		if(!item.galleries || item.galleries.length == 0 || (item.updates<MAX_SEQUENTIAL_GET && item.galleries.length<item.updates/2)){
+			//just reload all
+			$scope.loadingItem = item;
+			errorCount = 0;
+			doBatchLoading(0,item.updates,item.src,item.server);
+		}else{	
+			for(var i=0;i<item.galleries.length;i++){
+				if(i > 0 && item.galleries[i] === null){
+					$scope.loadingItem = item;
+					nullGalleries++;
+					$http({method: 'GET', withCredentials: true, url: host+'exist_multi_info_offload.php?href='+$rootScope.currentUser+'&n='+item.src+'&s='+item.server+'&g='+i+'&rnd='+Math.random()}).then(function (response){
+						item.galleries[parseInt(response.data.gal)]=response.data.limit;
+						clearNullCounter();
+					},clearNullCounter);
+					function clearNullCounter(){
+						nullGalleries--;
+						if(nullGalleries == 0 && item.galleries.length == item.updates+1){
+							$scope.loadingItem = null;
+							dataStorageService.setDebounceData(8000);
+						}
+					}
+				}
+			}
+			console.log(item.galleries.length ,item.updates);
+			if(item.galleries.length <= item.updates){
+				$scope.loadingItem = item;
+				errorCount = 0;
+				doBatchLoading(item.galleries.length,item.updates,item.src,item.server);
+			}
+		}
 	}
 	$scope.itemLoading = function(item){
 		return item === $scope.loadingItem;
 	}
 	function doBatchLoading(start, updates,src,server){
-		var host = 'http://mityok.hostfree.pw/sc/';
-		var host = 'http://mityok.byethost4.com/sc/';
-		var host = 'http://mityok.rf.gd/sc/';
-		//var host = 'http://mityok.xp3.biz/sc/';
-		//var host = 'http://mityok.freehost.tech/sc/';
-		//var host = 'http://mityok.esy.es/sc/';//max seq needs to be low, doesn't work well with large requests
-		//host = 'remote/';
 		$http({method: 'GET', withCredentials: true, url: host+'trigger_seq_offload.php?href='+$rootScope.currentUser+'&n='+src+'&s='+server+'&l='+updates+'&b='+start+'&p='+MAX_SEQUENTIAL_GET+'&rnd='+Math.random()}).
 		then(function(response) {
 			// 0 50
@@ -57,11 +76,13 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 			var filtered = item.galleries.filter(function(value){return value != null;});
 			console.log(filtered.length+"/"+item.updates);
 			dataStorageService.setDebounceData(8000);
-			if(response.data.start+MAX_SEQUENTIAL_GET<response.data.limit){
+			if(response.data.start+MAX_SEQUENTIAL_GET<=response.data.limit){
 				errorCount = 0;
 				doBatchLoading(response.data.start+MAX_SEQUENTIAL_GET,response.data.limit,response.data.src,response.data.server);
 			}else{
-				$scope.loadingItem = null;
+				if(nullGalleries == 0){
+					$scope.loadingItem = null;
+				}
 			}
         }, function(response) {
 			errorCount++;
@@ -74,6 +95,17 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 			console.log(response);
 		});
 	}
+	
+	$scope.galleryReduce = function(galleries){
+		if(!galleries){
+			return -1;
+		}
+		return galleries.filter(function(value){return value != null;}).length;
+	}
+	$scope.notAllLoaded = function(item){
+		return item.updates>(item.galleries?(item.galleries.length-1):-1);
+	}
+	/*
 	function clipPage(arr, start, limit){
 		var sum = 0;
 		for (var i = start; i < arr.length; i++) {
@@ -84,13 +116,6 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		}
 		return arr.length;
 	}
-	$scope.gallerieReduce = function(galleries){
-		if(!galleries){
-			return -1;
-		}
-		return galleries.filter(function(value){return value != null;}).length;
-	}
-	/*
 	$scope.dump = function(src,server,galleries){
 		//TODO: set max to 200 units
 		var total = galleries.reduce(function(a, b) {return a + b;});

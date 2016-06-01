@@ -14,9 +14,11 @@ mainApp.service('dataStorageService',function($http, $q){
 		}else{
 			value.date = new Date(value.date);
 		}
+		//some times updates have 1 item less
 		value.updates = parseInt(value.updates);
 		//
 	}
+
 	this.loadFromNet = function(){
 		var that = this;
 		$http({method: 'GET', url: 'server/exist_multi_start.php', cache: false}).
