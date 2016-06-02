@@ -1,10 +1,11 @@
 "use strict";
-mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService) {
+mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService) {
+	$scope.menu={show:false};
 	angular.element($window).on('keypress', onKeyPress);
 	$rootScope.imgShow = false;
+	var forceCloseDropdown = true;
 	function onKeyPress(e) {
-		console.log(e,String.fromCharCode(e.keyCode));
-		if(e.code == 'KeyH'){
+		if(e.code == 'KeyV' && $location.path() != "/login"){
 			$rootScope.imgShow = !$rootScope.imgShow;
 		}
 		$scope.$apply();
@@ -24,4 +25,37 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 	$scope.toggleRootShow = function(){
 		$rootScope.imgShow = !$rootScope.imgShow;
 	}
+	function onMouseDown(e){
+		if(forceCloseDropdown){
+			$scope.menu.show = false;
+		}else{
+			var dropDown = document.getElementsByClassName('button-list')[0];
+			var parent = e.target.parentNode;
+			while(parent){
+				if(parent == document.body){
+					$scope.menu.show = false;
+					break;
+				}else if(parent == dropDown){
+					break;
+				}
+				parent = parent.parentNode;
+			}
+		}
+		$scope.$apply();
+	}
+	$scope.goHome = function(){
+		$location.path("/list");
+	}
+	$scope.goToLogin = function(){
+		$location.path("/login");
+	}
+	$scope.$watch('menu.show',function(newVal,oldVal){
+		if(newVal !== oldVal){
+			if(newVal){
+				angular.element($window).on('mouseup', onMouseDown);
+			}else{
+				angular.element($window).off('mouseup', onMouseDown);
+			}
+		}
+	});
 }]);

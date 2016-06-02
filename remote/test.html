@@ -1,7 +1,6 @@
 <html>
 <head>
-</head>
-<body>
+
 <script>
 function receiveMessage(){
 //
@@ -14,7 +13,7 @@ function receiveMessage(){
 	}
 //
 
-	console.log('inited',q);
+	console.log('inited',q,window.location);
 	var xmlhttp = new XMLHttpRequest();
 	var url = window.location.protocol+"//"+window.location.host+"/sc/exist_multi_info_offload.php?href="+q.href+"&n="+q.src+"&s="+q.server+"&g="+q.gallery+"&z="+q.size+"&rnd="+Math.random();
 	console.log(url);
@@ -50,5 +49,7 @@ function receiveMessage(){
 }
 receiveMessage();
 </script>
+</head>
+<body>
 </body>
 </html>
