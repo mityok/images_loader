@@ -15,15 +15,9 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var errorCount = 0;
 	$scope.loadingItem = null;
 	var nullGalleries = 0;
-	var host = 'http://mityok.hostfree.pw/sc/';
-	var host = 'http://mityok.byethost4.com/sc/';
-	//var host = 'http://mityok.rf.gd/sc/';
-	//var host = 'http://mityok.xp3.biz/sc/';
-	//var host = 'http://mityok.freehost.tech/sc/';
-	//var host = 'http://mityok.esy.es/sc/';//max seq needs to be low, doesn't work well with large requests
-	//host = 'remote/';
+	var host = null;
 	$scope.get = function(item){
-			
+		host = serverStatusService.getValidService();
 		nullGalleries = 0;
 		if(!item.galleries || item.galleries.length == 0 || (item.updates<MAX_SEQUENTIAL_GET && item.galleries.length<item.updates/2)){
 			//just reload all
@@ -105,35 +99,6 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	$scope.notAllLoaded = function(item){
 		return item.updates>(item.galleries?(item.galleries.length-1):-1);
 	}
-	/*
-	function clipPage(arr, start, limit){
-		var sum = 0;
-		for (var i = start; i < arr.length; i++) {
-			sum += arr[i];
-			if (sum >= limit) {
-				return i- start;
-			}
-		}
-		return arr.length;
-	}
-	$scope.dump = function(src,server,galleries){
-		//TODO: set max to 200 units
-		var total = galleries.reduce(function(a, b) {return a + b;});
-		
-		console.log(total);
-		var page = 0;
-		if(total >= MAX_PARALLEL_IMAGE_DUMP){
-			page = clipPage(galleries,0,MAX_PARALLEL_IMAGE_DUMP);
-		}
-		console.log('page',page);
-		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+1+"&p="+page, data: galleries, cache: false}).
-		then(function(response) {
-			console.log(response);
-        }, function(response) {
-			console.log(response);
-		});
-	}
-	*/
 	
 	$scope.prev = function(){
 		$scope.start-=$scope.page;
@@ -165,36 +130,9 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		spliceList();
 		dataStorageService.setDebounceData(0,true);
 	}
-
 	//pagination split
 	function spliceList(){
 		$scope.list = $scope.collection.slice($scope.start,$scope.start + $scope.page);
-	}
-	
-	/*
-	function loadNext() {
-		console.log('loading next');
-		getCounter++;
-		if(getCounter<$scope.collection.length ){
-			var item = $scope.collection[getCounter];
-			if( item.galleries && item.galleries.length>0){
-				loadNext();
-			}else{
-				if(!item.excluded){
-					$scope.get(item.updates,item.src,item.server);
-				}
-			}
-		}
-	}
-	*/
-	function checkIfNeedsToUpdate() {
-		if(galleriesNeedsToUpdate.length>0){
-			console.log('galleriesNeedsToUpdate');
-			console.log(JSON.stringify(galleriesNeedsToUpdate));
-		}else{
-			console.log('no galleriesNeedsToUpdate');
-			
-		}
 	}
 	
 	(function init(){

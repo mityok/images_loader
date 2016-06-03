@@ -2,6 +2,7 @@
 
 mainApp.service('dataStorageService',function($http, $q){
 	var list = null;
+	var date = new Date("Jan 1 1970");
 	function updateValues(value) {
 		var dt = new Date();
 		if(value.date.toUpperCase() === 'TODAY'){
@@ -39,6 +40,7 @@ mainApp.service('dataStorageService',function($http, $q){
 					console.log('new',items[i]);
 				}
 			}
+			date = new Date();
 			//$scope.collection = response.data.items.filter(isIncluded);
 			//$scope.total = $scope.collection.length;
 			//
@@ -48,6 +50,9 @@ mainApp.service('dataStorageService',function($http, $q){
 			console.log(response);
 		});
 	}
+	this.getTime = function(){
+		return date;
+	}
 	this.getData = function(){
 		return list;
 	}
@@ -56,11 +61,15 @@ mainApp.service('dataStorageService',function($http, $q){
 			console.log('has list');
 			return $q.when(list);
 		}
-		
 		return $http({method: 'GET', url: 'server/read_post.php'}).
 		then(function(response) {
-			console.log('getting list');
-			list = response.data.data;
+			console.log('getting list & stuff',response.data.data);
+			if(angular.isArray(response.data.data)){
+				list = response.data.data;
+			}else{
+				list = response.data.data.list;
+				date = new Date(response.data.data.time);
+			}
 			return list;
         }, function(response) {
 			console.log(response);
@@ -68,7 +77,7 @@ mainApp.service('dataStorageService',function($http, $q){
 		});
 	}
 	this.setData = function(){
-		return $http({method: 'POST', url: 'server/write_post.php', data: list}).
+		return $http({method: 'POST', url: 'server/write_post.php', data: {'list':list,'time':date}}).
 			then(function(response) {
 				return response;
 			}, function(response) {

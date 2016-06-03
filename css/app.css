@@ -60,6 +60,20 @@ i{
 .button-list li > a> i{
 	vertical-align: middle;
 }
+
+.button-list li > a.server:hover {
+	-webkit-filter:brightness(50%);
+}
+.button-list li > a.server.not-checked {
+    color: #ccc;
+}
+.button-list li > a.server.validated {
+    color: green;
+}
+.button-list li > a.server.failed {
+    color: red;
+}
+
 .button-list li > a{
     text-transform: uppercase;
     display: block;
@@ -68,7 +82,7 @@ i{
 	color:#555;
 	padding: 4px 8px;
 }
-.button-list li > a:hover{
+.button-list li > a:not(.server):hover{
 	color:#111;
 }
 .side-menu.menu-show .button-list{

@@ -2,9 +2,12 @@
 <ul class="button-list">
 	<li><a href="#" ng-click="toggleRootShow()" data-force-close="true"><i class="fa fa-eye fa-2x fa-fw" ng-class="{'fa-eye-slash':imgShow}"></i>show</a></li>
 	<li><a href="#" ng-click="dropPreloadedGalleries()"><i class="fa fa-floppy-o fa-2x  fa-fw"></i>Save 2 File</a></li>
-	<li><a href="#" ng-click="loadFromInternetGalleries()"><i class="fa fa-cloud-download fa-2x  fa-fw"></i>Load From Web</a></li>
+	<li><a href="#" ng-click="loadFromInternetGalleries()"><i class="fa fa-cloud-download fa-2x  fa-fw"></i>Update {{latestUpdate | date:"dd MMM yy"}}</a></li>
 	<li><a href="#" ng-click="clearSession()" data-force-close="true"><i class="fa fa-trash fa-2x  fa-fw"></i>Clear Session</a></li>
 	<li><a href="#" ng-click="fullScreen()" data-force-close="true" ><i class="fa fa-2x fa-fw" ng-class="isFullScreen() ? 'fa-compress' : 'fa-arrows-alt'"></i>Full Screen</a></li>
 	<li><a href="#/main" data-force-close="true"><i class="fa fa-home fa-2x fa-fw"></i>Go Home</a></li>
 	<li><a href="#/login" data-force-close="true"><i class="fa fa-unlock-alt fa-2x fa-fw" ></i>Login</a></li>
+	<li ng-repeat="server in serverList">
+	<a href="#" ng-click="setServer(server)" class="server" ng-class="getValidated(server)"><i class="fa fa-2x fa-fw" ng-class="server.local ? 'fa-plug' : 'fa-server'"></i>{{server.url | shortenUrl}}</a>
+	</li>
 </ul>
