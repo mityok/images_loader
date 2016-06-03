@@ -43,12 +43,7 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 		}
 		$scope.$apply();
 	}
-	$scope.goHome = function(){
-		$location.path("/list");
-	}
-	$scope.goToLogin = function(){
-		$location.path("/login");
-	}
+
 	$scope.$watch('menu.show',function(newVal,oldVal){
 		if(newVal !== oldVal){
 			if(newVal){
