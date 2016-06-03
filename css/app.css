@@ -56,6 +56,7 @@ i{
     left: 0;
     z-index: 1;
 	box-shadow: 0 0 16px rgba(0,0,0,0.5);
+	white-space: nowrap;
 }
 .button-list li > a> i{
 	vertical-align: middle;
@@ -85,18 +86,26 @@ i{
 .button-list li > a:not(.server):hover{
 	color:#111;
 }
-.side-menu.menu-show .button-list{
-	display:block;
+.side-menu dropdown-menu .left{
+	left: 0;
+	right: auto;
 }
-.side-menu .button-list{
-	display:none;
+.side-menu dropdown-menu .right{
+	right: 0;
+	left: auto;
+}
+.side-menu dropdown-menu{
+	flex:0 0 auto;
+	position:relative;
 }
 .side-menu{
 	flex: 0 0 auto;
+	display: flex;
+	justify-content: space-between;
 }
 .side-menu button{
-	display:block;
-	padding: 8px;
+	display: inline-block;
+    padding: 8px;
 }
 .main-view{
 	display: flex;

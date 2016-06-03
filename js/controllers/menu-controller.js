@@ -1,6 +1,6 @@
 "use strict";
 mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService,serverStatusService) {
-	$scope.menu={show:false};
+
 	angular.element($window).on('keypress', onKeyPress);
 	$rootScope.imgShow = false;
 	$scope.dataService = dataStorageService;
@@ -49,33 +49,5 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 	$scope.toggleRootShow = function(){
 		$rootScope.imgShow = !$rootScope.imgShow;
 	}
-	function onMouseDown(e){
-		$scope.$applyAsync(function (){
-			if(e.target.dataset.forceClose){
-				$scope.menu.show = false;
-			}else{
-				var dropDown = document.getElementsByClassName('button-list')[0];
-				var parent = e.target.parentNode;
-				while(parent){
-					if(parent == document.body){
-						$scope.menu.show = false;
-						break;
-					}else if(parent == dropDown){
-						break;
-					}
-					parent = parent.parentNode;
-				}
-			}
-		});
-	}
-
-	$scope.$watch('menu.show',function(newVal,oldVal){
-		if(newVal !== oldVal){
-			if(newVal){
-				angular.element($window).on('mouseup', onMouseDown);
-			}else{
-				angular.element($window).off('mouseup', onMouseDown);
-			}
-		}
-	});
+	
 }]);

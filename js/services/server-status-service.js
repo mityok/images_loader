@@ -26,7 +26,6 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 		{url:'http://mityok.rf.gd/sc/'},
 		{url:'http://mityok.xp3.biz/sc/'},
 		{url:'http://mityok.freehost.tech/sc/'},
-		{url:'http://mityok.freehost2.tech/sc/'},
 		{url:'http://mityok.esy.es/sc/'},//max seq needs to be low, doesn't work well with large requests
 		{url:'remote/',local:true, validated:true}
 	];
