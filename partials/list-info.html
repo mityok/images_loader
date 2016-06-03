@@ -6,6 +6,7 @@
 			</a>
 			<div class="item-counter">{{arr[i]}} / {{files[i]}}</div>
 			<button class="btn-float" ng-click="getGallery(itemId,serverId,arr[i],i)"><i class="fa fa-fw fa-download"></i></button>
+			<div class="preloader" ng-if="currentLoadingGallery == i"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>
 		</span>
 	</div>
 	<div class="nav-bar">

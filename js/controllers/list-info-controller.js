@@ -12,6 +12,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	$scope.arr = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId).galleries;
 	$scope.start = getValidStart();
 	$scope.maxItems = Math.min($scope.arr.length - $scope.start ,pagination);
+	$scope.currentLoadingGallery = null;
 	//[0,0,0,1,2,3,4,5]	len = 8 , start = 3 maxItems = 5
 	console.log($scope.maxItems);
 	createStore();
@@ -46,14 +47,17 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	}
 
 	$scope.getGallery = function(src,server,count,i){
+		$scope.currentLoadingGallery = i;
 		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+i+"&p="+1, data: $scope.arr, cache: false}).
 		then(function(response) {
-			if(response.data.message=="ok"){
+			if(response.data.message == "ok"){
 				getImagesStore($scope.itemId, $scope.serverId);
 			}
+			$scope.currentLoadingGallery= null;
 			console.log(response);
         }, function(response) {
 			console.log(response);
+			$scope.currentLoadingGallery= null;
 		});
 		//$scope.files[i]=
 	}

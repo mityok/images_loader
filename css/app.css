@@ -171,19 +171,11 @@ i{
     line-height: 1em;
 }
 
-.item .preloader > span{
+.item .preloader > i{
+	top: 50%;
     position: relative;
-    top: 50%;
-    text-align: center;
-    display: block;
-    font-size: 2em;
-    transform: translateY(-50%);
-	animation: mymove 1s infinite;
-	color: #fff;
-}
-@keyframes mymove {
-    0% {transform: translateY(-50%) rotate(0deg);}
-    50% {transform: translateY(-50%) rotate(180deg);}
+    width: 100%;
+    margin-top: -0.6em;
 }
 .item .preloader{
 	position: absolute;

@@ -26,6 +26,7 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 		$rootScope.imgShow = !$rootScope.imgShow;
 	}
 	function onMouseDown(e){
+		$scope.$applyAsync(function onMouseDown(e){
 		if(forceCloseDropdown){
 			$scope.menu.show = false;
 		}else{
@@ -41,7 +42,8 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 				parent = parent.parentNode;
 			}
 		}
-		$scope.$apply();
+
+	})
 	}
 
 	$scope.$watch('menu.show',function(newVal,oldVal){
