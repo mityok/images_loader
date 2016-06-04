@@ -20,17 +20,22 @@ mainApp.service('visibilityService',function($timeout, $rootScope){
 		visibilityChange = 'webkitvisibilitychange';
 	}
 	function handleVisibilityChange() {
-		$rootScope.$applyAsync(function (){
-			if (document[hidden]) {
-				titleTicker();
-				countTitle = 0;
-				documentHidden = true;
-			} else {
-				$timeout.cancel(timeout);
-				documentHidden = false;
-				document.title = defaultTitle;
-			}
-		});
+		if (document[hidden]) {
+			titleTicker();
+			countTitle = 0;
+			documentHidden = true;
+			document.body.style.opacity = 0.0;
+		} else {
+			$timeout.cancel(timeout);
+			documentHidden = false;
+			setTimeout(function(){
+				document.body.style.opacity = 1;
+			},100);
+			document.title = defaultTitle;
+		}
+		if(!$rootScope.$$phase) {
+			$rootScope.$apply();
+		}
 	}
 	this.getDocumentVisiblity = function(){
 		return documentHidden;
