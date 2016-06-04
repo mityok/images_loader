@@ -25,9 +25,6 @@ mainApp.service('visibilityService',function($timeout, $rootScope){
 			countTitle = 0;
 			documentHidden = true;
 			document.body.style.opacity = 0.0;
-			document.body.style.display='none';
-			document.body.offsetHeight; 
-			document.body.style.display='';
     		document.body.style.transform='translateZ(0)';
 		} else {
 			$timeout.cancel(timeout);
