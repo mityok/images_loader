@@ -2,7 +2,7 @@
 
 mainApp.service('dataStorageService',function($http, $q){
 	var list = null;
-	var date = new Date("Jan 1 1970");
+	var date = null;
 	function updateValues(value) {
 		var dt = new Date();
 		if(value.date.toUpperCase() === 'TODAY'){

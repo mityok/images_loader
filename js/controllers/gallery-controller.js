@@ -41,9 +41,6 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 			$scope.nextImage();
 		}
 	}
-	$scope.goBack = function(){
-		$location.path( '/list' );
-	};
 	function cancelTimeout(){
 		$timeout.cancel(playTimer);
 		if($scope.nextImageOpacity<1 && $scope.nextImageOpacity>0){
@@ -94,7 +91,7 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 				if($scope.playing){
 					$scope.nextImage();
 				}
-			},1000);
+			},3000);
 		}
 	}
 	$scope.$on('$destroy', function () {

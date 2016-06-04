@@ -3,11 +3,10 @@
 	<img class="main-image image-0" ng-style="{opacity: nextImageOpacity}" ng-src="{{firstImage}}" />
 </div>
 <div class="slideshow-nav-container">
-	<button ng-click="togglePlay()" class="play">{{playing?'&#10074;&#10074;':'&#9658;'}}</button>
-	<button class="prev" ng-click="prevImage()">&#11013;</button>
-	<button class="next" ng-click="nextImage()" >&#10145;</button>
+	<button ng-click="togglePlay()" class="play"><i class="fa fa-fw" ng-class="playing ? 'fa-pause' : 'fa-play'"></i></button>
+	<button class="prev" ng-click="prevImage()"><i class="fa fa-arrow-circle-o-left fa-fw"></i></button>
+	<button class="next" ng-click="nextImage()"><i class="fa fa-arrow-circle-o-right fa-fw"></i></button>
 	<span class="spacer">
 		<span>{{counter+1}}/{{collection.length}}</span>
 	</span>
-	<button ng-click="goBack()" class="back">&#10149;</button>
 </div>

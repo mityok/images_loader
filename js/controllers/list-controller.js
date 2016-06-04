@@ -17,6 +17,9 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	var nullGalleries = 0;
 	var host = null;
 	$scope.get = function(item){
+		if($scope.loadingItem){
+			return;
+		}
 		host = serverStatusService.getValidService();
 		nullGalleries = 0;
 		if(!item.galleries || item.galleries.length == 0 || (item.updates<MAX_SEQUENTIAL_GET && item.galleries.length<item.updates/2)){

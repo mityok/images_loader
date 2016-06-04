@@ -34,11 +34,9 @@ button:not([disabled]):hover{
 	box-shadow: inset 0 0 16px rgba(0,0,0,.5);
 }
 img{
-	-webkit-filter: invert(1) blur(10px);
-	opacity:0.1;
+	-webkit-filter: invert(1) blur(10px) opacity(10%);
 }
 i{
-
 	display: inline-block;
 }
 .flip-h{
@@ -82,6 +80,7 @@ i{
     vertical-align: middle;
 	color:#555;
 	padding: 4px 8px;
+    cursor: pointer;
 }
 .button-list li > a:not(.server):hover{
 	color:#111;
@@ -99,9 +98,12 @@ i{
 	position:relative;
 }
 .side-menu{
-	flex: 0 0 auto;
 	display: flex;
-	justify-content: space-between;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    background-color: rgba(0,0,0,.2);
+    z-index: 1;
 }
 .side-menu button{
 	display: inline-block;
@@ -111,6 +113,7 @@ i{
 	display: flex;
     flex-direction: column;
     flex: 1 1 100%;
+	margin-top: 50px;
 }
 .nav-bar{
     height: 50px;
@@ -218,7 +221,6 @@ i{
 }
 .show img{
 	-webkit-filter: none;
-	opacity:1;
 }
 /* list */
 

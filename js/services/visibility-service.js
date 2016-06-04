@@ -25,14 +25,14 @@ mainApp.service('visibilityService',function($timeout, $rootScope){
 			countTitle = 0;
 			documentHidden = true;
 			document.body.style.opacity = 0.0;
-    		document.body.style.transform='translateZ(0)';
+    		document.body.style.transform = 'translateZ(0)';
 		} else {
 			$timeout.cancel(timeout);
 			documentHidden = false;
 			document.body.style.transform='';
 			setTimeout(function(){
 				document.body.style.opacity = 1;
-			},300);
+			},500);
 			document.title = defaultTitle;
 		}
 		if(!$rootScope.$$phase) {
