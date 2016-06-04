@@ -1,22 +1,23 @@
 "use strict";
-mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStorageService', function ($scope, $routeParams, $http, dataStorageService ) {
+mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStorageService', 'stateService', function ($scope, $routeParams, $http, dataStorageService, stateService ) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.updates = $routeParams.updates;
 	var pagination = 30;
-	
-	$scope.start = 1;
 	//470
 	$scope.files=[];
 	$scope.store = [];
 	$scope.arr = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId).galleries;
 	$scope.start = getValidStart();
-	$scope.maxItems = Math.min($scope.arr.length - $scope.start ,pagination);
+	$scope.maxItems = stateService.getKey(getStateKey()) || Math.min($scope.arr.length - $scope.start ,pagination);
 	$scope.currentLoadingGallery = null;
 	//[0,0,0,1,2,3,4,5]	len = 8 , start = 3 maxItems = 5
 	console.log($scope.maxItems);
 	createStore();
 	getImagesStore($scope.itemId, $scope.serverId);
+	function getStateKey(){
+		return $scope.itemId+$scope.serverId+'maxItems';
+	}
 	function getImagesStore(src, server){
 		$http({method: 'POST', url: 'server/folder_scan.php?s='+src+"&r="+server, data: $scope.arr, cache: false}).
 		then(function(response) {
@@ -63,6 +64,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	}
 	$scope.more = function(){
 		$scope.maxItems += pagination;
+		stateService.addKey(getStateKey(),$scope.maxItems);
 		createStore();
 	}
 }]);

@@ -1,6 +1,6 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'serverStatusService','$q' , function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, serverStatusService, $q) {
-	$scope.start = 0;
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'serverStatusService','stateService' , function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, serverStatusService, stateService) {
+	$scope.start = stateService.getKey('pageStart')||0;
 	$scope.page = 50;
 
 	$scope.mainImage= null;
@@ -135,6 +135,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 	}
 	//pagination split
 	function spliceList(){
+		stateService.addKey('pageStart',$scope.start);
 		$scope.list = $scope.collection.slice($scope.start,$scope.start + $scope.page);
 	}
 	

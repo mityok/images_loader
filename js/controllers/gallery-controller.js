@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location', '$timeout', function ($scope, $http, $routeParams, $location, $timeout) {
+mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location', '$timeout',  '$window', function ($scope, $http, $routeParams, $location, $timeout, $window) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.nextImageOpacity = 1;
@@ -14,7 +14,17 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 		var myArray = value.match(regexp);
 		return myArray!=null;
 	}
+	function onKeyPress(e) {
+		if (e.keyCode == '37') {
+		   $scope.prevImage();
+		}
+		else if (e.keyCode == '39') {
+		   $scope.nextImage();
+		}	
+		$scope.$apply();
+	}
 	(function init(){
+		angular.element($window).on('keydown ', onKeyPress);
 		$http({method: 'GET', url: 'server/read_folder.php?q='+$scope.itemId+'&r='+$scope.serverId, cache: false}).
         then(function(response) {
 			if(response.data.message){
@@ -97,16 +107,17 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 	$scope.$on('$destroy', function () {
 		$timeout.cancel(playTimer);
 		$timeout.cancel(fadeTimer);
+		angular.element($window).off('keydown ', onKeyPress);
 	});
+
 	function playAnim(){
 		fadeTimer = $timeout(function(){
-			$scope.nextImageOpacity -= 0.02;
+			$scope.nextImageOpacity -= 0.06;
 			if($scope.nextImageOpacity > 0){
 				playAnim();
 			}else{
 				switchImage();
 			}
 		},1000/60);
-		
 	}
 }]);
