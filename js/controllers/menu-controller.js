@@ -1,12 +1,18 @@
 "use strict";
-mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService,serverStatusService) {
+mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService', 'visibilityService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService,serverStatusService,visibilityService) {
 
 	angular.element($window).on('keypress', onKeyPress);
 	$rootScope.imgShow = false;
 	$scope.dataService = dataStorageService;
+	$scope.visibilityService = visibilityService;
 	$scope.$watch('dataService.getTime()', function(newVal) {
 		if(newVal){
 			$scope.latestUpdate = newVal;
+		}
+	});
+	$scope.$watch('visibilityService.getDocumentVisiblity()', function(newVal) {
+		if(newVal && $rootScope.imgShow){
+			$rootScope.imgShow = false;
 		}
 	});
 	function onKeyPress(e) {

@@ -1,7 +1,10 @@
 'use strict';
-mainApp.service('visibilityService',function($timeout){
-	var title = "Loading...";
+mainApp.service('visibilityService',function($timeout, $rootScope){
+	var title = "Background...";
+	var defaultTitle = "Main App";
 	var countTitle = 0;
+	var timeout = null;
+	var documentHidden;
 	var hidden, visibilityChange; 
 	if (typeof document.hidden !== 'undefined') {
 		hidden = 'hidden';
@@ -17,38 +20,43 @@ mainApp.service('visibilityService',function($timeout){
 		visibilityChange = 'webkitvisibilitychange';
 	}
 	function handleVisibilityChange() {
-		if (document[hidden]) {
-			document.title = 'Paused';
-		} else {
-			document.title = 'Playing';
-		}
+		$rootScope.$applyAsync(function (){
+			if (document[hidden]) {
+				titleTicker();
+				countTitle = 0;
+				documentHidden = true;
+			} else {
+				$timeout.cancel(timeout);
+				documentHidden = false;
+				document.title = defaultTitle;
+			}
+		});
 	}
-
+	this.getDocumentVisiblity = function(){
+		return documentHidden;
+	}
 	function onBlur() {
 		document.body.className = 'blurred';
 	};
 	function onFocus(){
 		document.body.className = 'focused';
 	};
-
 	window.onfocus = onFocus;
 	window.onblur = onBlur;
-
 	if (typeof document[hidden] === 'undefined') {
 		alert('This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.');
 	} else {
 		// Handle page visibility change   
 		document.addEventListener(visibilityChange, handleVisibilityChange, false);
-		titleTicker();
+		handleVisibilityChange();
 	}
 	function titleTicker(){
-		$timeout(function(){
+		timeout = $timeout(function(){
 			countTitle++;
 			if(countTitle > title.length-1){
 				countTitle = -1;
 			}
 			document.title = title.substr(countTitle);
-			
 			titleTicker();
 		},400);
 	}

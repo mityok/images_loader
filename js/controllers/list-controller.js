@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'visibilityService', 'serverStatusService','$q' , function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, visibilityService, serverStatusService, $q) {
+mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootScope','dataStorageService', 'serverStatusService','$q' , function ($scope, $http,$window, $timeout, $rootScope, dataStorageService, serverStatusService, $q) {
 	$scope.start = 0;
 	$scope.page = 50;
 
