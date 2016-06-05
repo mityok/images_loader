@@ -24,19 +24,17 @@ $images = array();
 for($i = $start; $i < $page + $start; $i++){
 	$cur_pics = $gal_arr[$i];
 	for($j = 1; $j <= $cur_pics; $j++){
-		$name = $src.'/'.substr($src, 0, 2).$i.'x'.sprintf("%03s", $j).'.jpg';
-		if (!file_exists('../thumbs/'.$name)) {
-			$data[] = 'http://www.'.$href.($server > 0 ? $server : '').'.com/'.$name;
+		$name = substr($src, 0, 2).$i.'x'.sprintf("%03s", $j).'.jpg';
+		if (!file_exists('../thumbs/server'.$server.'/'.$src.'/images/'.$name)) {
+			$data[] = 'http://www.'.$href.($server > 0 ? $server : '').'.com/'.$src.'/'.$name;
 		}else{
 			$images[] = array('location'=>'FILE','status'=>'OK');
-
 		}
 	}
 }
 //echo $page;
 //echo $href;
 //echo $proxy;
-//print_r($data);
 //die('stop');
 // build the individual requests, but do not execute them
 $chrls = array();
@@ -78,7 +76,7 @@ for($i = 0; $i < $len; $i++){
 }
 curl_multi_close($mh);
 $after = microtime(true) - $before;
-//header('Content-Type: application/json');
+header('Content-Type: application/json');
 header('Duration: '.$after);
 echo json_encode(array(
 	'duration' => $after,
