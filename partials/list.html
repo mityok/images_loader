@@ -1,5 +1,5 @@
 <div class="item-container">
-	<span class="item" ng-repeat="item in list track by ( item.src + item.server )" title="{{item.name}} - ({{item.src}})" ng-if="!item.excluded">
+	<span class="item" ng-repeat="item in list track by ( item.src + item.server )" title="{{item.name}} - ({{item.src}}) {{item.excluded}} {{item.rating}} {{item.ph}}">
 		<a href="#/list/{{item.src}}/{{item.server}}/{{item.updates}}">
 			<img ng-src="server/get_thumb.php?s={{item.server}}&n={{item.src}}&i={{item.imgsrc?item.imgsrc:null}}" >
 		</a>

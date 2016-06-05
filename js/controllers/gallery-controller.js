@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',  '$window', '$rootScope', 'dataStorageService',function ($scope, $http, $routeParams,  $timeout, $window, $rootScope, dataStorageService) {
+mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',  '$window', '$rootScope', 'dataStorageService','$location',function ($scope, $http, $routeParams,  $timeout, $window, $rootScope, dataStorageService,$location) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.nextImageOpacity = 1;
@@ -44,7 +44,10 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 			}
 			$scope.collection = response.data.files.filter(isIncluded);
 			$scope.folder = response.data.folder+'/';
-			console.log($scope.folder,$scope.collection);
+			if(!$scope.collection || $scope.collection.length ===0){
+				$location.path('/list/'+$scope.itemId+'/'+$scope.serverId+'/'+selectedItem.updates);
+				return;
+			}
 			$scope.counter = 0;
 			//console.log('init',$scope.firstImage,$scope.secondImage);
 			$scope.firstImage = $scope.folder+$scope.collection[0];

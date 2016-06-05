@@ -144,9 +144,13 @@ i{
 .item-container{
 	flex: 1 0 100%;
 }
-.item img{
+.item-container .item img{
 	height: 150px;
 	min-width: 100px;
+}
+.item img{
+	min-height: 50px;
+    min-width: 50px;
 }
 .item{
 	position: relative;
@@ -356,6 +360,7 @@ console textarea{
 	padding:0;
 	font-size:10px;
 	box-sizing: border-box;
+	text-shadow: 1px 1px 0 #ffd217, 2px 2px 0 #5ac7ff;
 }
 console{
 	position:fixed;
@@ -369,4 +374,8 @@ console{
 	z-index:0;
 	padding:2px;
 	opacity:0.8;
+}
+/* rating */
+rating .selected{
+	background-color: rgba(255,255,255,.5);
 }

@@ -133,9 +133,30 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		spliceList();
 		dataStorageService.setDebounceData(0,true);
 	}
+	
 	//pagination split
 	function spliceList(){
 		stateService.addKey('pageStart',$scope.start);
+		function sort(a, b){
+			if(a.rating === b.rating){
+				if(a.ph === b.ph){
+					var x = a.src.toLowerCase(), y = b.src.toLowerCase();    
+					return x < y ? -1 : x > y ? 1 : 0;
+				}
+				var i = !a.ph?0:(a.ph.toLowerCase()==='no'?-1:1);
+				var j = !b.ph?0:(b.ph.toLowerCase()==='no'?-1:1);
+				return  j - i;
+			}
+			return  (b.rating||0) - (a.rating||0);
+		}
+		
+		function removeExcluded(value){
+			return !value.excluded;
+		}
+		//$scope.list = $scope.collection;
+		$scope.collection = $scope.collection.filter(removeExcluded);
+		$scope.collection.sort(sort);
+		//$scope.list = $scope.collection;
 		$scope.list = $scope.collection.slice($scope.start,$scope.start + $scope.page);
 	}
 	
