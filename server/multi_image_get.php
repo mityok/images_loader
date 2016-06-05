@@ -1,10 +1,12 @@
 <?php
 include_once("pass.php");
 ini_set('max_execution_time', 300);
+$method = $_SERVER['REQUEST_METHOD'];
 $href = PasswordSingleton::getInstance()->getPassword();
 $proxy = PasswordSingleton::getInstance()->getProxy();
 ini_set('memory_limit', '-1');
-$gal_arr = json_decode(file_get_contents("php://input"));
+
+$gal_arr = ($method == 'POST' ? json_decode(file_get_contents("php://input")):json_decode(htmlspecialchars($_GET["q"])));
 $src = htmlspecialchars($_GET["s"]);
 $server = (int)htmlspecialchars($_GET["r"]);
 $page = (int)htmlspecialchars($_GET["p"]);
