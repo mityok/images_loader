@@ -1,16 +1,29 @@
-mainApp.directive('console',['$window',function($window ){
+mainApp.directive('console',['$window','$timeout','$rootScope',function($window, $timeout, $rootScope ){
 	return {
 		restrict: 'EA',
 		scope:{},
 		template:'<textarea ng-model="myTextarea"></textarea><div></div>',
+		link:function(scope, element, attrs){
+			scope.textarea= element.find('textarea')[0];
+		},
 		controller:function($scope){
 			var MAX_LENGTH = 200;
+			function scrollTop(){
+				$timeout(function(){
+					$scope.textarea.scrollTop = $scope.textarea.scrollHeight;
+				},100);
+			}
 			function shorten(str){
 				if (str.length > MAX_LENGTH) {
 					str= str.substr(0, MAX_LENGTH/2 - 2) + ' ... ' + str.substr(str.length - MAX_LENGTH/2 - 3, str.length);
 				}
 				return str;
 			}
+			$scope.$watch(function(){return $rootScope.consoleShow},function(newVal){
+				if(newVal){
+					scrollTop();
+				}
+			});
 			function parseStack(stack,ctor){
 				var err = stack.split(/\r?\n|\r/g);
 				for(var i=0;i<err.length;i++){
@@ -44,6 +57,7 @@ mainApp.directive('console',['$window',function($window ){
 								str+=shorten(JSON.stringify(arg[k]))+' - ';
 							}
 							$scope.myTextarea += str+ stack+'\r\n-------\r\n';
+							scrollTop();
 						})
 						old.apply(this, arguments);
 					}
