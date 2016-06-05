@@ -5,7 +5,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $href = PasswordSingleton::getInstance()->getPassword();
 $proxy = PasswordSingleton::getInstance()->getProxy();
 ini_set('memory_limit', '-1');
-
+error_reporting(E_STRICT);
 $gal_arr = ($method == 'POST' ? json_decode(file_get_contents("php://input")):json_decode(htmlspecialchars($_GET["q"])));
 $src = htmlspecialchars($_GET["s"]);
 $server = (int)htmlspecialchars($_GET["r"]);
@@ -67,7 +67,8 @@ for($i = 0; $i < $len; $i++){
 	//
 	$response[] = $httpCode;
 	if($httpCode === 200){
-		$filename = array_pop(explode('/', $data[$i]));
+		$slashSplit = explode('/', $data[$i]);
+		$filename = array_pop($slashSplit);
 		storeFile($body, $src, $filename, $server);
 		$images[] = array('location'=>'WEB','status'=>'OK');
 	}else{
@@ -77,7 +78,7 @@ for($i = 0; $i < $len; $i++){
 }
 curl_multi_close($mh);
 $after = microtime(true) - $before;
-header('Content-Type: application/json');
+//header('Content-Type: application/json');
 header('Duration: '.$after);
 echo json_encode(array(
 	'duration' => $after,
