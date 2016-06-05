@@ -1,18 +1,29 @@
 "use strict";
-mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location', '$timeout',  '$window', function ($scope, $http, $routeParams, $location, $timeout, $window) {
+mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',  '$window', '$rootScope', 'dataStorageService',function ($scope, $http, $routeParams,  $timeout, $window, $rootScope, dataStorageService) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.nextImageOpacity = 1;
 	$scope.counter = 0;
+	var markGallery = {};
 	var playTimer = null; 
 	var fadeTimer = null; 
+	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
+	console.log(selectedItem);
 	function isIncluded(value) {
 		//     /^(ra)([0-9]){0,}x([0-9]){0,}\.(jpg)$/g
 		// ra4x001.jpg
-
 		var regexp = new RegExp('^('+$scope.itemId.substr(0,2)+')([0-9]){0,}x([0-9]){0,}\.(jpg)$', "g");
 		var myArray = value.match(regexp);
-		return myArray!=null;
+		
+		if(myArray){
+			var match = value.match(/\d+/g);
+			if(match && match[0] && selectedItem.viewed){
+				//don't return if viewed
+				return selectedItem.viewed.indexOf(parseInt(match[0]))==-1;
+			}
+			return true;
+		}
+		return false;
 	}
 	function onKeyPress(e) {
 		if (e.keyCode == '37') {
@@ -31,16 +42,13 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 				console.log(response.data.message);
 				return;
 			}
-			/* mock start */
-			//response.data={folder:'http://freelargephotos.com/',files:['705711_l.jpg','705712_l.jpg','705713_l.jpg','705714_l.jpg','705715_l.jpg','705716_l.jpg']}
-			//response.data={folder:'http://freelargephotos.com/',files:['705711_l.jpg','705712_l.jpg']}
-			//$scope.collection=response.data.files;
-			/* mock end */
 			$scope.collection = response.data.files.filter(isIncluded);
 			$scope.folder = response.data.folder+'/';
 			console.log($scope.folder,$scope.collection);
 			$scope.counter = 0;
+			//console.log('init',$scope.firstImage,$scope.secondImage);
 			$scope.firstImage = $scope.folder+$scope.collection[0];
+			getCurrentImageInfo();
         }, function(response) {
 			console.log(response);
 		});
@@ -62,10 +70,12 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 		cancelTimeout();
 		var prev = $scope.counter-1;
 		var curr = $scope.counter;
+		//console.log(curr,prev);
 		if(prev<0){
 			curr = 0;
 			prev = $scope.collection.length-1;
 			$scope.counter=$scope.collection.length;
+			//console.log(curr,prev,$scope.counter);
 		}
 		rearange(curr,prev);
 		$scope.counter--;
@@ -89,13 +99,44 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$location'
 	function rearange(c0,c1){
 		$scope.firstImage = $scope.folder+$scope.collection[c0];
 		$scope.secondImage = $scope.folder+$scope.collection[c1];
+		//console.log('rearange',$scope.firstImage,$scope.secondImage);
+	}
+	function getCurrentImageInfo(){
+		var match = $scope.collection[$scope.counter].match(/\d+/g);
+		$scope.gallery = parseInt(match[0]);
+		$scope.image = parseInt(match[1]);
+		//if not viewed don't mark
+		if(!$rootScope.imgShow){
+			return;
+		}
+		if(!markGallery[$scope.gallery]){
+			markGallery[$scope.gallery]=[];
+		}
+		markGallery[$scope.gallery][$scope.image] = true;
+		
+		var totalImagesInGallery = selectedItem.galleries[$scope.gallery];
+		var sum=0;
+		for(var i=0;i<markGallery[$scope.gallery].length;i++){
+			if(markGallery[$scope.gallery][i]){
+				sum++;
+			}
+		}
+		if(sum === totalImagesInGallery){
+			if(!selectedItem.viewed){
+				selectedItem.viewed = []
+			}
+			selectedItem.viewed.push($scope.gallery);
+			dataStorageService.setDebounceData(0,true);
+		}
 	}
 	function switchImage(){
 		//TODO: mark which gallery is already seen
+		getCurrentImageInfo();
 		//console.log($scope.collection[$scope.counter],$scope.itemId,$scope.serverId);
 		$scope.nextImageOpacity = 1;
 		$scope.firstImage = $scope.folder+$scope.collection[$scope.counter];
-		$scope.secondImage = $scope.folder+$scope.collection[$scope.counter+1];
+		$scope.secondImage = $scope.folder+$scope.collection[($scope.counter+1)>=$scope.collection.length?0:$scope.counter+1];
+		//console.log('switchImage',$scope.firstImage,$scope.secondImage,$scope.counter);
 		if($scope.playing){
 			playTimer = $timeout(function(){
 				if($scope.playing){

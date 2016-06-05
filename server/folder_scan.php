@@ -15,8 +15,6 @@ function getValidStart($arr){
 	}
 	return -1;
 }
-//100 files - 10 to 15 seconds
-//http://localhost:9090/sc_srch/multi_image_get.php?q=[0,2,3,2,1]&s=ladycoral&r=4&t=1&p=4
 $before = microtime(true);
 $data = array();
 $response = array();
@@ -36,7 +34,7 @@ if (file_exists($dr)) {
 		}
 	}
 }else{
-	$message = "error";
+	$message = "no folder";
 }
 $after = microtime(true) - $before;
 header('Content-Type: application/json');

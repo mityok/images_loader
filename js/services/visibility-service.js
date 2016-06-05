@@ -1,5 +1,5 @@
 'use strict';
-mainApp.service('visibilityService',function($timeout, $rootScope){
+mainApp.service('visibilityService',function($timeout, $rootScope, $document){
 	var title = "Background...";
 	var defaultTitle = "Main App";
 	var countTitle = 0;
@@ -54,7 +54,7 @@ mainApp.service('visibilityService',function($timeout, $rootScope){
 		alert('This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.');
 	} else {
 		// Handle page visibility change   
-		document.addEventListener(visibilityChange, handleVisibilityChange, false);
+		$document[0].addEventListener(visibilityChange, handleVisibilityChange);
 		handleVisibilityChange();
 	}
 	function titleTicker(){

@@ -25,7 +25,12 @@ mainApp.config(function($routeProvider) {
       }).
 	  when('/gallery/:itemId/:serverId', {
         templateUrl: 'partials/gallery.html',
-        controller: 'GalleryCtrl'
+        controller: 'GalleryCtrl',
+		resolve: {
+			service: function(dataStorageService){
+				return dataStorageService.getStoredData();
+				}
+			}
       }).
 	  when('/login', {
         templateUrl: 'partials/login.html',

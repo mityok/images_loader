@@ -5,12 +5,14 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	$scope.updates = $routeParams.updates;
 	var pagination = 30;
 	//470
-	$scope.files=[];
+	$scope.files = {};
 	$scope.store = [];
-	$scope.arr = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId).galleries;
+	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
+	$scope.arr = selectedItem.galleries;
 	$scope.start = getValidStart();
 	$scope.maxItems = stateService.getKey(getStateKey()) || Math.min($scope.arr.length - $scope.start ,pagination);
-	$scope.currentLoadingGallery = null;
+	$scope.currentLoadingGalleries = [];
+	$scope.initialLoad=false;
 	//[0,0,0,1,2,3,4,5]	len = 8 , start = 3 maxItems = 5
 	console.log($scope.maxItems);
 	createStore();
@@ -25,10 +27,17 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 			if(response.data.message=="error"){
 				console.log('error');
 			}else{
-				$scope.files=response.data.files;
+				$scope.files = response.data.files;
 			}
+			$scope.sum = 0;
+			for( var el in $scope.files ) {
+				$scope.sum += $scope.files[el];
+			}
+			console.log($scope.sum);
+			$scope.initialLoad = true;
         }, function(response) {
 			console.log(response);
+			$scope.initialLoad = true;
 		});
 		
 	}
@@ -48,19 +57,40 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 	}
 
 	$scope.getGallery = function(src,server,count,i){
-		$scope.currentLoadingGallery = i;
+		if($scope.currentLoadingGalleries.indexOf(i)==-1){
+			$scope.currentLoadingGalleries.push(i);
+		}
 		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+i+"&p="+1, data: $scope.arr, cache: false}).
 		then(function(response) {
 			if(response.data.message == "ok"){
 				getImagesStore($scope.itemId, $scope.serverId);
 			}
-			$scope.currentLoadingGallery= null;
+			loadingDone(i);
 			console.log(response);
         }, function(response) {
 			console.log(response);
-			$scope.currentLoadingGallery= null;
+			loadingDone(i);
 		});
-		//$scope.files[i]=
+	}
+	function loadingDone(index){
+		var pos = $scope.currentLoadingGalleries.indexOf(index);
+		if(pos>-1){
+			$scope.currentLoadingGalleries.splice(pos,1);
+		}
+	}
+	$scope.toggleVisible = function(i){
+		if(selectedItem.viewed && selectedItem.viewed.indexOf(i)>=0){
+			var pos = selectedItem.viewed.indexOf(i)
+			selectedItem.viewed.splice(selectedItem.viewed.indexOf(i),1);
+		}else if(!selectedItem.viewed){
+			selectedItem.viewed=[i];
+		}else{	
+			selectedItem.viewed.push(i);
+		}
+		dataStorageService.setDebounceData(0,true);
+	}
+	$scope.isViewed = function(i){
+		return selectedItem.viewed && selectedItem.viewed.indexOf(i)>=0;
 	}
 	$scope.more = function(){
 		$scope.maxItems += pagination;

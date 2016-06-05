@@ -188,13 +188,21 @@ i{
 	padding: 2px 4px;
 	cursor: pointer;
 }
+.btn-float.bottom{
+	top:auto;
+	bottom:0;
+}
+.btn-float i.fa-eye{
+	color: rgba(255,0,0,1);
+}
 .btn-float{
 	position: absolute;
-	top:2px;
+	top:0;
 	right:0;
 	font-size: 16px;
-    padding: 2px;
+    padding: 4px 2px;
     line-height: 1em;
+	-webkit-filter: drop-shadow(0 0 2px #fff);
 }
 
 .item .preloader > i{
