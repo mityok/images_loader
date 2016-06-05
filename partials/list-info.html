@@ -5,7 +5,7 @@
 				<img ng-src="server/get_gallery_thumb.php?s={{serverId}}&n={{itemId}}&g={{i}}&c=1&m=1">
 			</a>
 			<div class="item-counter">{{arr[i]}} / {{files[i]}}</div>
-			<button class="btn-float" ng-click="getGallery(itemId,serverId,arr[i],i)"><i class="fa fa-fw fa-download"></i></button>
+			<button class="btn-float" ng-click="getGallery(itemId, serverId, arr[i], i)"><i class="fa fa-fw fa-download"></i></button>
 			<button class="btn-float bottom" ng-click="toggleVisible(i)"><i class="fa fa-fw" ng-class="isViewed(i) ? 'fa-eye' : 'fa-eye-slash'"></i></button>
 			<div class="preloader" ng-if="currentLoadingGalleries.indexOf(i)>-1"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>
 		</span>

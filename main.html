@@ -13,6 +13,7 @@
 	<script src="js/services/state-service.js"></script>
 	<script src="js/filters/url-filter.js"></script>
 	<script src="js/directives/dropdown-menu-directive.js"></script>
+	<script src="js/directives/console-directive.js"></script>
 	<script src="js/directives/orientation-detector-directive.js"></script>
 	<script src="js/controllers/list-controller.js"></script>
 	<script src="js/controllers/list-info-controller.js"></script>
@@ -29,5 +30,6 @@
 		<div class="side-menu" ng-include="'partials/menu.html'" ng-controller="MenuCtrl"></div>
 		<div ng-view class="main-view"></div>
 	</div>
+	<console ng-show="consoleShow"></console>
 </body>
 </html>

@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStorageService', 'stateService', function ($scope, $routeParams, $http, dataStorageService, stateService ) {
+mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout', 'dataStorageService', 'stateService', function ($scope, $routeParams, $http, $timeout,dataStorageService, stateService ) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.updates = $routeParams.updates;
@@ -63,7 +63,9 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', 'dataStor
 		$http({method: 'POST', url: 'server/multi_image_get.php?s='+src+"&r="+server+"&t="+i+"&p="+1, data: $scope.arr, cache: false}).
 		then(function(response) {
 			if(response.data.message == "ok"){
-				getImagesStore($scope.itemId, $scope.serverId);
+				$timeout(function(){
+					getImagesStore($scope.itemId, $scope.serverId);
+				},100);
 			}
 			loadingDone(i);
 			console.log(response);

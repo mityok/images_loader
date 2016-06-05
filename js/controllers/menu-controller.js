@@ -22,6 +22,9 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 		$scope.$apply();
 	}
 	$scope.serverList = serverStatusService.getServerList();
+	$scope.openConsole = function(server){
+		$rootScope.consoleShow=!$rootScope.consoleShow;
+	}
 	$scope.getValidated = function(server){
 		if( typeof server.validated == 'undefined'){
 			return 'not-checked';
