@@ -353,9 +353,11 @@ i{
     padding: 0 20px;
 }
 /* orientation */
-orientation-detector{
+.side-menu orientation-detector{
 	font-size:10px;
+	flex: 1 1 auto;
 }
+
 /* console */
 console textarea{
 	width: 100%;
@@ -381,6 +383,9 @@ console{
 	opacity:0.8;
 }
 /* rating */
+.side-menu rating{
+	flex: 0 0 auto;
+}
 .side-menu rating .selected {
     background-color: rgba(255,255,255,.5);
 }
@@ -398,6 +403,10 @@ console{
 }
 .text-primary{
     color: #5bc0de;
+}
+.side-menu rating button.exclude{
+    background-color: #B20D00;
+    color: white;
 }
 .side-menu rating button{
     border-radius: 50%;

@@ -1,4 +1,4 @@
 <div ng-if="selectedItem">
-<button ng-click="exclude()"><i class="text-danger fa fa-fw fa-ban"></i></button>
+<button ng-click="exclude()" class="exclude"><i class="fa fa-fw fa-ban"></i></button>
 <button  ng-click="rate(i)" ng-class="{'selected':selectedItem.rating === i}" ng-repeat="i in [-2,-1,0,1,2]"><i class="fa fa-fw" ng-class="getRatingIcon(i)"></i></button>
 </div>

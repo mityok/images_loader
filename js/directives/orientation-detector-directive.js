@@ -2,7 +2,7 @@ mainApp.directive('orientationDetector',['$window','$rootScope',function($window
 	return {
 		restrict: 'EA',
 		scope:{},
-		template:'<div>{{orientation}} - ({{beta}},{{gamma}},{{alpha}})</div>',
+		template:'<div>{{orientation}} ({{beta}},{{gamma}},{{alpha}})</div>',
 		controller:function($scope){
 			$scope.inclination = 0;
 			$scope.isUp = false;
