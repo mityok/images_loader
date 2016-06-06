@@ -22,7 +22,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 	}
 	function getImagesStore(src, server){
 		$http({method: 'POST', url: 'server/folder_scan.php?s='+src+"&r="+server, data: $scope.arr, cache: false}).
-		then(function(response) {
+		then(function successCallback(response) {
 			console.log(response.data);
 			if(response.data.message=="error"){
 				console.log('error');
@@ -35,7 +35,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 			}
 			console.log($scope.sum);
 			$scope.initialLoad = true;
-        }, function(response) {
+        }, function errorCallback(response) {
 			console.log(response.data);
 			$scope.initialLoad = true;
 		});
