@@ -110,7 +110,6 @@ class PasswordSingleton{
 	  $fp = fsockopen($parts['host'], 
 			  isset($parts['port'])?$parts['port']:80, 
 			  $errno, $errstr, 30);
-			   echo $parts['query'];
 	  if (!$fp) {
 		  return false;
 	  } else {
