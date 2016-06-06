@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout', 'dataStorageService', 'stateService', function ($scope, $routeParams, $http, $timeout,dataStorageService, stateService ) {
+mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout', '$location', 'dataStorageService', 'stateService', function ($scope, $routeParams, $http, $timeout, $location, dataStorageService, stateService ) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.updates = $routeParams.updates;
@@ -8,6 +8,10 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 	$scope.files = {};
 	$scope.store = [];
 	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
+	if(!selectedItem || selectedItem.excluded){
+		$location.path('/list');
+		return;
+	}
 	$scope.arr = selectedItem.galleries;
 	$scope.start = getValidStart();
 	$scope.maxItems = stateService.getKey(getStateKey()) || Math.min($scope.arr.length - $scope.start ,pagination);

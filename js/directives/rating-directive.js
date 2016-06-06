@@ -1,4 +1,4 @@
-mainApp.directive('rating',['$window', '$routeParams','dataStorageService',function($window,  $routeParams, dataStorageService){
+mainApp.directive('rating',['$window', '$routeParams','$location', 'dataStorageService',function($window,  $routeParams, $location, dataStorageService){
 	return {
 		restrict: 'EA',
 		templateUrl: 'partials/rating.html',
