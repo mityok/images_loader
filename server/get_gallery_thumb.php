@@ -19,16 +19,16 @@ header("Content-type: image/jpeg");
 if(file_exists($link) && @getimagesize($link)){
 	header("Folder: true");
 	$data = file_get_contents($link);
+	echo $data;
 }else{
+	header('Durations: '.$after);
 	header("Internet: true");
-	$proxy = PasswordSingleton::getInstance()->getProxy();
-	$data = file_get_contents($url, false, $proxy ? stream_context_create(array('http'=>array('method'=>"GET",'proxy' => $proxy))) : NULL);
-	if(!is_dir("../$folder/$server_folder/$name/$full")){
-		mkdir("../$folder/$server_folder/$name/$full", 0777, true);
-	}
-	file_put_contents($link, $data);	
+	header("Host: ".$_SERVER['SERVER_NAME']);
+	header("Host2: ".$_SERVER['HTTP_REFERER']);
+	header("Host3: ".$_SERVER['HTTP_HOST']);
+	readfile($url);
+	PasswordSingleton::getInstance()->backgroundPost('http://'.$_SERVER['HTTP_HOST'].'/images_loader/server/write_post_thumb.php?link='.urlencode($link).'&url='.urlencode($url).'&dir='.urlencode("../$folder/$server_folder/$name/$full"));
 }
 
-header('Durations: '.$after);
-echo $data;
+//echo $data;
 ?>
