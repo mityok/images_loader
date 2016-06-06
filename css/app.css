@@ -352,6 +352,10 @@ i{
     text-align: right;
     padding: 0 20px;
 }
+/* orientation */
+orientation-detector{
+	font-size:10px;
+}
 /* console */
 console textarea{
 	width: 100%;
@@ -377,8 +381,8 @@ console{
 	opacity:0.8;
 }
 /* rating */
-rating .selected{
-	background-color: rgba(255,255,255,.5);
+.side-menu rating .selected {
+    background-color: rgba(255,255,255,.5);
 }
 .text-success {
     color: #00CC09;
@@ -404,7 +408,7 @@ rating .selected{
 .side-menu rating button i{
     -webkit-filter: drop-shadow(0 0 4px #fff);
 }
-.side-menu rating button i.fa-star-half-o.text-success::before{
-transform: scale(-1, 1);
-display:block;
+.side-menu rating button i.text-success::before{
+	transform: scale(-1, 1);
+	display:block;
 }

@@ -23,7 +23,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 	function getImagesStore(src, server){
 		$http({method: 'POST', url: 'server/folder_scan.php?s='+src+"&r="+server, data: $scope.arr, cache: false}).
 		then(function(response) {
-			console.log(response);
+			console.log(response.data);
 			if(response.data.message=="error"){
 				console.log('error');
 			}else{
@@ -36,7 +36,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 			console.log($scope.sum);
 			$scope.initialLoad = true;
         }, function(response) {
-			console.log(response);
+			console.log(response.data);
 			$scope.initialLoad = true;
 		});
 		
@@ -68,9 +68,9 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 				},100);
 			}
 			loadingDone(i);
-			console.log(response);
+			console.log(response.data);
         }, function(response) {
-			console.log(response);
+			console.log(response.data);
 			loadingDone(i);
 		});
 	}

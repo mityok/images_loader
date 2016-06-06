@@ -19,7 +19,7 @@
 	<button class="dropdown-button fa fa-fw fa-ellipsis-v fa-2x"></button>
 	<ul class="button-list right">
 		<li ng-repeat="server in serverList">
-			<a href="#" ng-click="setServer(server)" class="server" ng-class="getValidated(server)"><i class="fa fa-2x fa-fw" ng-class="server.local ? 'fa-plug' : 'fa-server'"></i>{{server.url | shortenUrl}}</a>
+			<a ng-click="setServer(server)" class="server" ng-class="getValidated(server)"><i class="fa fa-2x fa-fw" ng-class="server.local ? 'fa-plug' : 'fa-server'"></i>{{server.url | shortenUrl}}</a>
 		</li>
 	</ul>
 </dropdown-menu>
