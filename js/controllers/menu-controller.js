@@ -22,6 +22,9 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 		$scope.$apply();
 	}
 	$scope.serverList = serverStatusService.getServerList();
+	$scope.validateAllServers = function(server){
+		serverStatusService.validateAllServers();
+	}
 	$scope.openConsole = function(server){
 		$rootScope.consoleShow=!$rootScope.consoleShow;
 	}

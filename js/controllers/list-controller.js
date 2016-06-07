@@ -155,17 +155,16 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 		}
 		//$scope.list = $scope.collection;
 		$scope.collection = $scope.collection.filter(removeExcluded);
+		$scope.total= $scope.collection.length;
 		$scope.collection.sort(sort);
 		//$scope.list = $scope.collection;
 		$scope.list = $scope.collection.slice($scope.start,$scope.start + $scope.page);
 	}
 	
 	(function init(){
-		document.title = "This is the new page title.";		
 		unregisterDataService = $scope.$watch('dataService.getData()', function(newVal) {
 			if(newVal){
 				$scope.collection = newVal;
-				$scope.total= $scope.collection.length;
 				spliceList();
 			}
 		});

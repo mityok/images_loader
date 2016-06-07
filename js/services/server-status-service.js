@@ -1,16 +1,34 @@
 'use strict';
 mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $sce){
 	var server = null;
+	var selectedServer=null;
 	var timer = null;
+	var counter = 0;
 	$rootScope.itemValidation = null;
 	angular.element($window).on('message', onMessage);
 	this.setServer = function(srvr){
-		if(server != srvr){
-			server = srvr;
-			openRequestedPopup();
+		selectedServer = srvr;		
+	}
+	this.validateAllServers = function(){
+		counter = -1;
+		checkNext();
+	}
+	function checkNext(){
+		counter++;
+		if(counter>=serverList.length){
+			return;
 		}
+		server = serverList[counter];
+		if(server.local){
+			return checkNext();
+		}
+
+		openRequestedPopup();
 	}
 	this.getValidService = function(){
+		return selectedServer;
+	//TODO: get selected
+		
 		for(var i=0;i<serverList.length;i++){
 			if(serverList[i].validated){
 				return serverList[i].url;
@@ -36,6 +54,7 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 			console.log('close');
 			if(server){
 				server.validated = false;
+				checkNext();
 			}
 			$rootScope.itemValidation = '';
 		},5000);
@@ -49,6 +68,7 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 				if(data.message=='ok' && data.value==12){
 					console.log('ok',data, server);
 					server.validated = true;
+					
 					console.log(JSON.stringify(serverList));
 				}
 			}catch(e){
@@ -58,5 +78,6 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 			console.log('error',e);
 		}
 		$rootScope.itemValidation = '';
+		checkNext();
 	}
 });
