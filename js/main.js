@@ -40,9 +40,10 @@ mainApp.config(function($routeProvider) {
         redirectTo: '/list'
       });
 })
-.run(function($rootScope, $location, $cookies) {
+.run(function($window, $rootScope, $location, $cookies) {
 	$rootScope.currentUser = $cookies.get('_galleryInfo');
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
+		$window.stop();
 		if ($rootScope.currentUser == null) {
 			// no logged user, redirect to /login
 			if ( next.templateUrl === "partials/login.html") {

@@ -26,7 +26,14 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 		openRequestedPopup();
 	}
 	this.getValidService = function(){
-		return selectedServer;
+		if(!selectedServer){
+			for(var i=0;i<serverList.length;i++){
+				if(serverList[i].validated){
+					return serverList[i].url;
+				}
+			}	
+		}
+		return selectedServer.url;
 	//TODO: get selected
 		
 		for(var i=0;i<serverList.length;i++){
