@@ -352,12 +352,11 @@ i{
 }
 .slideshow-nav-container .spacer > span, .slideshow-nav-container button{
 	color: rgba(255,255,255,0.8);
-	font-size: 2em;
 }
 .slideshow-nav-container .spacer > span{
 	display: block;
     text-align: right;
-    padding: 0 20px;
+    padding: 0 5px;
 }
 /* orientation */
 .side-menu orientation-detector{

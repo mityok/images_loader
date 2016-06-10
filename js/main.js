@@ -46,7 +46,7 @@ mainApp.config(function($routeProvider) {
 	
 	$rootScope.$watch('visibilityService.getDocumentVisiblity()', function(newVal,oldVal) {
 		console.log(newVal,oldVal);
-		if(!newVal && oldVal && $rootScope.imgShow){
+		if(newVal===false && $rootScope.imgShow){
 			$rootScope.imgShow = false;
 		}
 	});

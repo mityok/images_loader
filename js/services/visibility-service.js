@@ -1,6 +1,6 @@
 'use strict';
 mainApp.service('visibilityService',function($timeout, $rootScope, $document){
-	var title = "Background...";
+	var title = "Background...\u200E";
 	var defaultTitle = "Main App";
 	var countTitle = 0;
 	var timeout = null;
