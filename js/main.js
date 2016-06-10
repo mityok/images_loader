@@ -40,10 +40,17 @@ mainApp.config(function($routeProvider) {
         redirectTo: '/list'
       });
 })
-.run(function($window, $rootScope, $location, $cookies) {
+.run(function($window, $rootScope, $location, $cookies, visibilityService) {
+	$rootScope.visibilityService = visibilityService;
 	$rootScope.currentUser = $cookies.get('_galleryInfo');
+	
+	$rootScope.$watch('visibilityService.getDocumentVisiblity()', function(newVal,oldVal) {
+		console.log(newVal,oldVal);
+		if(!newVal && oldVal && $rootScope.imgShow){
+			$rootScope.imgShow = false;
+		}
+	});
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
-		$window.stop();
 		if ($rootScope.currentUser == null) {
 			// no logged user, redirect to /login
 			if ( next.templateUrl === "partials/login.html") {

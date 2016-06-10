@@ -7,7 +7,11 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 	$rootScope.itemValidation = null;
 	angular.element($window).on('message', onMessage);
 	this.setServer = function(srvr){
-		selectedServer = srvr;		
+		selectedServer = srvr;
+		for(var i=0;i<serverList.length;i++){
+			serverList[i].selected = false;
+		}
+		selectedServer.selected = true;		
 	}
 	this.validateAllServers = function(){
 		counter = -1;
@@ -22,8 +26,7 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 		if(server.local){
 			return checkNext();
 		}
-
-		openRequestedPopup();
+		 $timeout(openRequestedPopup,10);
 	}
 	this.getValidService = function(){
 		if(!selectedServer){
@@ -34,13 +37,7 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 			}	
 		}
 		return selectedServer.url;
-	//TODO: get selected
-		
-		for(var i=0;i<serverList.length;i++){
-			if(serverList[i].validated){
-				return serverList[i].url;
-			}
-		}
+
 	}
 	this.getServerList = function(){
 		return serverList;
@@ -56,15 +53,17 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 	];
 	function openRequestedPopup() {
 		//iframe ng-src
-		$rootScope.itemValidation = $sce.trustAsResourceUrl(server.url+'test.html?href='+$rootScope.currentUser+'&src=texasrose&server=2&gallery=2&size=20&rnd='+Math.random());
+		var url = server.url+'test.html?href='+$rootScope.currentUser+'&src=texasrose&server=2&gallery=2&size=20&rnd='+Math.random();
+		console.log(url);
+		$rootScope.itemValidation = $sce.trustAsResourceUrl(url);
 		timer = $timeout(function(){
 			console.log('close');
 			if(server){
 				server.validated = false;
 				checkNext();
 			}
-			$rootScope.itemValidation = '';
-		},5000);
+			$rootScope.itemValidation = $sce.trustAsResourceUrl('about:blank');
+		},10*1000);
 	}
 	function onMessage(e){
 		$timeout.cancel( timer );
@@ -84,7 +83,7 @@ mainApp.service('serverStatusService',function($rootScope, $window, $timeout, $s
 		}else{
 			console.log('error',e);
 		}
-		$rootScope.itemValidation = '';
+		$rootScope.itemValidation = $sce.trustAsResourceUrl('about:blank');
 		checkNext();
 	}
 });

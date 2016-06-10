@@ -72,7 +72,9 @@ i{
 .button-list li > a.server.failed {
     color: red;
 }
-
+.button-list li > a.server.selected{
+	text-shadow: 1px 1px 2px white, 1px 1px 2px white, 2px 2px 20px rgba(0,0,0,1);
+}
 .button-list li > a{
     text-transform: uppercase;
     display: block;
@@ -319,8 +321,13 @@ i{
     top: 0;
 	left: 0;
     background: rgba(55,55,55,55);
+	/*transition: opacity .5s;*/
+	transform: translateZ(0);
 }
-
+.slideshow-image-container .main-image.fade-in{
+	transition: opacity .5s;
+	opacity: 0;
+}
 .slideshow-nav-container{
 	background: rgba(20,20,20,0.5);
 	position:absolute;

@@ -2,11 +2,10 @@
 mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',  '$window', '$rootScope', 'dataStorageService','$location',function ($scope, $http, $routeParams,  $timeout, $window, $rootScope, dataStorageService,$location) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
-	$scope.nextImageOpacity = 1;
+	$scope.nextImageOpacity = false;
 	$scope.counter = 0;
 	var markGallery = {};
 	var playTimer = null; 
-	var fadeTimer = null; 
 	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
 	console.log(selectedItem);
 	function isIncluded(value) {
@@ -62,15 +61,9 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 			$scope.nextImage();
 		}
 	}
-	function cancelTimeout(){
-		$timeout.cancel(playTimer);
-		if($scope.nextImageOpacity<1 && $scope.nextImageOpacity>0){
-			$timeout.cancel(fadeTimer);
-			$scope.nextImageOpacity=1;
-		}
-	}
+	
 	$scope.prevImage = function(){
-		cancelTimeout();
+		//cancelTimeout();
 		var prev = $scope.counter-1;
 		var curr = $scope.counter;
 		//console.log(curr,prev);
@@ -80,14 +73,17 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 			$scope.counter=$scope.collection.length;
 			//console.log(curr,prev,$scope.counter);
 		}
-		rearange(curr,prev);
 		$scope.counter--;
-		playAnim();
-		
+		rearange(curr,prev);
+		$scope.nextImageOpacity = false;
+		$timeout(function(){
+			$scope.nextImageOpacity = true;
+			getCurrentImageInfo();
+		});
 	};
 	
 	$scope.nextImage = function(){
-		cancelTimeout();
+		//cancelTimeout();
 		var next = $scope.counter+1;
 		var curr = $scope.counter;
 		if(next>$scope.collection.length-1){
@@ -95,9 +91,14 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 			next = 0;
 			$scope.counter=-1;
 		}
-		rearange(curr,next);
 		$scope.counter++;
-		playAnim();
+		rearange(curr,next);
+		$scope.nextImageOpacity = false;
+		$timeout(function(){
+			$scope.nextImageOpacity = true;
+			getCurrentImageInfo();
+			switchImage();
+		});
 	};
 	function rearange(c0,c1){
 		$scope.firstImage = $scope.folder+$scope.collection[c0];
@@ -133,14 +134,12 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 		}
 	}
 	function switchImage(){
-		//TODO: mark which gallery is already seen
-		getCurrentImageInfo();
-		//console.log($scope.collection[$scope.counter],$scope.itemId,$scope.serverId);
-		$scope.nextImageOpacity = 1;
-		$scope.firstImage = $scope.folder+$scope.collection[$scope.counter];
-		$scope.secondImage = $scope.folder+$scope.collection[($scope.counter+1)>=$scope.collection.length?0:$scope.counter+1];
-		//console.log('switchImage',$scope.firstImage,$scope.secondImage,$scope.counter);
+		
 		if($scope.playing){
+			if(playTimer){
+				$timeout.cancel(playTimer);
+				playTimer = null;
+			}
 			playTimer = $timeout(function(){
 				if($scope.playing){
 					$scope.nextImage();
@@ -150,18 +149,8 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 	}
 	$scope.$on('$destroy', function () {
 		$timeout.cancel(playTimer);
-		$timeout.cancel(fadeTimer);
 		angular.element($window).off('keydown ', onKeyPress);
 	});
 
-	function playAnim(){
-		fadeTimer = $timeout(function(){
-			$scope.nextImageOpacity -= 0.06;
-			if($scope.nextImageOpacity > 0){
-				playAnim();
-			}else{
-				switchImage();
-			}
-		},1000/60);
-	}
+	
 }]);

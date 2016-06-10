@@ -1,20 +1,16 @@
 "use strict";
-mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService', 'visibilityService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService,serverStatusService,visibilityService) {
+mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService, serverStatusService) {
 
 	angular.element($window).on('keypress', onKeyPress);
 	$rootScope.imgShow = false;
 	$scope.dataService = dataStorageService;
-	$scope.visibilityService = visibilityService;
+	
 	$scope.$watch('dataService.getTime()', function(newVal) {
 		if(newVal){
 			$scope.latestUpdate = newVal;
 		}
 	});
-	$scope.$watch('visibilityService.getDocumentVisiblity()', function(newVal) {
-		if(newVal && $rootScope.imgShow){
-			$rootScope.imgShow = false;
-		}
-	});
+	
 	function onKeyPress(e) {
 		if(e.code == 'KeyV' && $location.path() != "/login"){
 			$rootScope.imgShow = !$rootScope.imgShow;
@@ -29,13 +25,15 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 		$rootScope.consoleShow=!$rootScope.consoleShow;
 	}
 	$scope.getValidated = function(server){
+		var cls = server.selected?'selected ':'';
 		if( typeof server.validated == 'undefined'){
-			return 'not-checked';
+			cls+= 'not-checked';
 		}else if(server.validated){
-			return 'validated';
+			cls+='validated';
 		}else{
-			return 'failed';
+			cls+='failed';
 		}
+		return cls;
 	}
 	$scope.setServer = function(server){
 		serverStatusService.setServer(server);

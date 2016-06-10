@@ -43,10 +43,18 @@ mainApp.service('visibilityService',function($timeout, $rootScope, $document){
 		return documentHidden;
 	}
 	function onBlur() {
+		documentHidden = false;
 		document.body.className = 'blurred';
+		if(!$rootScope.$$phase) {
+			$rootScope.$apply();
+		}
 	};
 	function onFocus(){
+		documentHidden = true;
 		document.body.className = 'focused';
+		if(!$rootScope.$$phase) {
+			$rootScope.$apply();
+		}
 	};
 	window.onfocus = onFocus;
 	window.onblur = onBlur;
@@ -55,7 +63,7 @@ mainApp.service('visibilityService',function($timeout, $rootScope, $document){
 	} else {
 		// Handle page visibility change   
 		$document[0].addEventListener(visibilityChange, handleVisibilityChange);
-		handleVisibilityChange();
+		$timeout(handleVisibilityChange,1);
 	}
 	function titleTicker(){
 		timeout = $timeout(function(){

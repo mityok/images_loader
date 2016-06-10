@@ -1,6 +1,6 @@
 <div class="slideshow-image-container" title="{{itemId}}">
 	<img class="main-image image-1" ng-src="{{secondImage}}" />
-	<img class="main-image image-0" ng-style="{opacity: nextImageOpacity}" ng-src="{{firstImage}}" />
+	<img class="main-image image-0" ng-class="{'fade-in': nextImageOpacity}" ng-src="{{firstImage}}" />
 </div>
 <div class="slideshow-nav-container">
 	<button ng-click="togglePlay()" class="play"><i class="fa fa-fw" ng-class="playing ? 'fa-pause' : 'fa-play'"></i></button>
