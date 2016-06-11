@@ -6,6 +6,7 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 	var pagination = 30;
 	//470
 	$scope.files = {};
+	$scope.timeout = $timeout;
 	$scope.store = [];
 	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
 	if(!selectedItem || selectedItem.excluded){

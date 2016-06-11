@@ -18,7 +18,7 @@
 <dropdown-menu list="button-list" button="dropdown-button" ng-transclude>
 	<button class="dropdown-button fa fa-fw fa-ellipsis-v fa-2x"></button>
 	<ul class="button-list right">
-		<li><a ng-click="validateAllServers()" data-force-close="true"><i class="fa fa-check-square fa-2x  fa-fw"></i>Check Servers</a></li>
+		<li><a ng-click="validateAllServers()" data-force-close="true"><i class="fa fa-sitemap fa-2x  fa-fw"></i>Check Servers</a></li>
 		<li ng-repeat="server in serverList">
 			<a ng-click="setServer(server)" class="server" ng-class="getValidated(server)"><i class="fa fa-2x fa-fw" ng-class="server.local ? 'fa-plug' : 'fa-server'"></i>{{server.url | shortenUrl}}</a>
 		</li>

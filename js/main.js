@@ -40,10 +40,14 @@ mainApp.config(function($routeProvider) {
         redirectTo: '/list'
       });
 })
+.constant('TOAST_LENGTH_SHORT',2000)
+.constant('TOAST_LENGTH_LONG',4000)
+.constant('TOAST_TYPE_INFO','info')
+.constant('TOAST_TYPE_ERROR','error')
+.constant('TOAST_TYPE_SUCCESS','success')
 .run(function($window, $rootScope, $location, $cookies, visibilityService) {
 	$rootScope.visibilityService = visibilityService;
 	$rootScope.currentUser = $cookies.get('_galleryInfo');
-	
 	$rootScope.$watch('visibilityService.getDocumentVisiblity()', function(newVal,oldVal) {
 		console.log(newVal,oldVal);
 		if(newVal===false && $rootScope.imgShow){

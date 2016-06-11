@@ -1,0 +1,118 @@
+.md-button{
+  position: relative;
+  overflow: hidden;
+}
+
+.md-button::before {
+  content: "";
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, .5);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.md-button.action::before {
+  animation: md-button-flash 0.3s linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes md-button-flash {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0, 0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(.1, .1);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(.4, .4);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2, 2);
+  }
+}
+
+.left-0::before {
+  left: 0%;
+}
+.left-10::before {
+  left: 10%;
+}
+.left-20::before {
+  left: 20%;
+}
+.left-30::before {
+  left: 30%;
+}
+.left-40::before {
+  left: 40%;
+}
+.left-50::before {
+  left: 50%;
+}
+.left-60::before {
+  left: 60%;
+}
+.left-70::before {
+  left: 70%;
+}
+.left-80::before {
+  left: 80%;
+}
+.left-90::before {
+  left: 90%;
+}
+.left-100::before {
+  left: 100%;
+}
+.top-0::before {
+  top: 0%;
+}
+
+.top-10::before {
+  top: 10%;
+}
+
+.top-20::before {
+  top: 20%;
+}
+
+.top-30::before {
+  top: 30%;
+}
+
+.top-40::before {
+  top: 40%;
+}
+
+.top-50::before {
+  top: 50%;
+}
+
+.top-60::before {
+  top: 60%;
+}
+
+.top-70::before {
+  top: 70%;
+}
+
+.top-80::before {
+  top: 80%;
+}
+
+.top-90::before {
+  top: 90%;
+}
+
+.top-100::before {
+  top: 100%;
+}

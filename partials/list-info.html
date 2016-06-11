@@ -1,8 +1,8 @@
-<div>
+<div class="list-info">
 	<div ng-if="initialLoad">
 		<span class="item" ng-repeat="i in store" title="{{itemId}}">
 			<a href="#/gallery/{{itemId}}/{{serverId}}">
-				<img ng-src="server/get_gallery_thumb.php?s={{serverId}}&n={{itemId}}&g={{i}}&c=1&m=1">
+				<img image-stop ng-src="server/get_gallery_thumb.php?s={{serverId}}&n={{itemId}}&g={{i}}&c=1&m=1">
 			</a>
 			<div class="item-counter">{{arr[i]}} / {{files[i]}}</div>
 			<button class="btn-float" ng-click="getGallery(itemId, serverId, arr[i], i)"><i class="fa fa-fw fa-download"></i></button>
@@ -11,6 +11,6 @@
 		</span>
 	</div>
 	<div class="nav-bar">
-		<button ng-disabled="start+maxItems>updates" class="more" ng-click="more()">{{start}} to {{start+maxItems-1>updates?updates:start+maxItems-1}} from {{updates}} loaded {{sum}}<i class="fa fa-chevron-right fa-2x"></i></button>
+		<button material-button ng-disabled="start+maxItems>updates" class="more" ng-click="timeout(more,400)">{{start}} to {{start+maxItems-1>updates?updates:start+maxItems-1}} from {{updates}} loaded {{sum}}<i class="fa fa-chevron-right fa-2x"></i></button>
 	</div>
 </div>

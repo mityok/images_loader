@@ -10,11 +10,15 @@
 	<script src="js/services/fullscreen-service.js"></script>
 	<script src="js/services/visibility-service.js"></script>
 	<script src="js/services/server-status-service.js"></script>
+	<script src="js/services/notification-service.js"></script>
 	<script src="js/services/state-service.js"></script>
 	<script src="js/filters/url-filter.js"></script>
 	<script src="js/directives/dropdown-menu-directive.js"></script>
+	<script src="js/directives/image-stop-directive.js"></script>
+	<script src="js/directives/material-button-directive.js"></script>
 	<script src="js/directives/rating-directive.js"></script>
 	<script src="js/directives/console-directive.js"></script>
+	<script src="js/directives/notification-directive.js"></script>
 	<script src="js/directives/orientation-detector-directive.js"></script>
 	<script src="js/controllers/list-controller.js"></script>
 	<script src="js/controllers/list-info-controller.js"></script>
@@ -23,14 +27,19 @@
 	<script src="js/controllers/menu-controller.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/normalize.css">
 	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/colors.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="css/material.css">
+	<link rel="stylesheet" type="text/css" href="css/console.css">
+	<link rel="stylesheet" type="text/css" href="css/scroll.css">
 </head>
 <body>
 	<iframe id="frm" style="width:1px;height:1px;border:none;position:absolute;z-index:100;top:0;left:0;background:blue;" sandbox="allow-forms allow-scripts allow-same-origin" ng-src="{{itemValidation}}"></iframe>
-	<div ng-class="{ 'show': imgShow}" class="main-container">
+	<div ng-class="{ 'show': imgShow, 'blur': consoleShow, 'gallery': inGallery}" class="main-container">
 		<div class="side-menu" ng-include="'partials/menu.html'" ng-controller="MenuCtrl"></div>
 		<div ng-view class="main-view"></div>
 	</div>
-	<console ng-show="consoleShow"></console>
+	<console ng-show="consoleShow" class="ng-cloak"></console>
+	<notification></notification>
 </body>
 </html>

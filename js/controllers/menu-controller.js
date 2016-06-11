@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService',function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService, serverStatusService) {
+mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$location', '$http', 'dataStorageService', 'fullscreenService', 'serverStatusService', 'notificationService', 'TOAST_LENGTH_LONG', 'TOAST_TYPE_ERROR', function ($scope, $rootScope,$window, $cookies, $location, $http, dataStorageService, fullscreenService, serverStatusService, notificationService, TOAST_LENGTH_LONG, TOAST_TYPE_ERROR) {
 
 	angular.element($window).on('keypress', onKeyPress);
 	$rootScope.imgShow = false;
@@ -12,6 +12,9 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 	});
 	
 	function onKeyPress(e) {
+		if(e.code == 'KeyC'){
+			$scope.openConsole();
+		}
 		if(e.code == 'KeyV' && $location.path() != "/login"){
 			$rootScope.imgShow = !$rootScope.imgShow;
 		}
@@ -23,6 +26,8 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 	}
 	$scope.openConsole = function(server){
 		$rootScope.consoleShow=!$rootScope.consoleShow;
+		//notificationService.show('Info message','info', TOAST_LENGTH_LONG);
+		notificationService.show('Info message 2');
 	}
 	$scope.getValidated = function(server){
 		var cls = server.selected?'selected ':'';

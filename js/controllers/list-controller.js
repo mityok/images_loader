@@ -5,6 +5,7 @@ mainApp.controller('ListCtrl', ['$scope','$http', '$window', '$timeout', '$rootS
 
 	$scope.mainImage= null;
 	$scope.latest=[];
+
 	$scope.dataService = dataStorageService;
 	var storedCollection ,galleriesNeedsToUpdate = [];
 	var iframe;

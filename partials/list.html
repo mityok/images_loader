@@ -1,7 +1,7 @@
 <div class="item-container">
 	<span class="item" ng-repeat="item in list track by ( item.src + item.server )" title="{{item.name}} - ({{item.src}}) {{item.excluded}} {{item.rating}} {{item.ph}}">
 		<a href="#/list/{{item.src}}/{{item.server}}/{{item.updates}}">
-			<img ng-src="server/get_thumb.php?s={{item.server}}&n={{item.src}}&i={{item.imgsrc?item.imgsrc:null}}" >
+			<img image-stop ng-src="server/get_thumb.php?s={{item.server}}&n={{item.src}}&i={{item.imgsrc?item.imgsrc:null}}" >
 		</a>
 		<div class="info-banner"><div>{{item.src}}<i ng-if="item.ph=='Yes'" class="fa fa-star-o"></i></div><div>{{item.date | date:'dd/MM/yyyy'}}<span>{{item.age}}</span></div></div>
 		<button class="btn-float" ng-click="exclude(item)"><i class="fa fa-ban"></i></button>

@@ -1,0 +1,60 @@
+/* console */
+console textarea{
+	width: calc(100% - 16px);
+	height: 100%;
+	resize: none;
+	padding:0;
+	margin: 8px;
+	font-size:10px;
+	box-sizing: border-box;
+	border: none;
+    font-family: monospace;
+    line-height: 1em;
+}
+console{
+	position:fixed;
+	top:20px;
+	bottom:20px;
+	left:20px;
+	right:20px;
+	background: #fff;
+	box-shadow: 0 0 32px rgba(0,0,0,.5), 0 0 0 32px rgba(0,0,0,.2);
+	z-index:1;
+	display: flex;
+	flex-direction: column;
+	border-radius: 3px;
+    overflow: hidden;
+}
+console .footer, console .title{
+    display: flex;
+    color: white;
+    align-items: center;
+	padding: 0 16px;
+}
+console .footer button{
+	line-height: 36px;
+    min-height: 36px;
+	padding: 0 8px;
+}
+console .footer{
+	min-height: 52px;
+}
+console .title{
+	font-size: 1.5em;
+	background-color: var(--blue-grey-500);
+    min-height: 64px;
+}
+console .title button{
+    color: #fff;
+	padding:8px;
+}
+console .title button:hover{
+	box-shadow:none;
+    color: rgba(255,255,255,0.5);
+}
+console .title .head{
+	flex: 1 0 auto;
+}
+console .footer .spacer{
+    flex: 1 1 auto;
+}

@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',  '$window', '$rootScope', 'dataStorageService','$location',function ($scope, $http, $routeParams,  $timeout, $window, $rootScope, dataStorageService,$location) {
+mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',  '$window', '$rootScope', 'dataStorageService','$location', 'notificationService', 'TOAST_LENGTH_LONG', 'TOAST_TYPE_ERROR',function ($scope, $http, $routeParams,  $timeout, $window, $rootScope, dataStorageService, $location, notificationService, TOAST_LENGTH_LONG, TOAST_TYPE_ERROR) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.nextImageOpacity = false;
@@ -8,6 +8,7 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 	var playTimer = null; 
 	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
 	console.log(selectedItem);
+$rootScope.inGallery=true;
 	function isIncluded(value) {
 		//     /^(ra)([0-9]){0,}x([0-9]){0,}\.(jpg)$/g
 		// ra4x001.jpg
@@ -45,10 +46,10 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 			$scope.folder = response.data.folder+'/';
 			if(!$scope.collection || $scope.collection.length ===0){
 				$location.path('/list/'+$scope.itemId+'/'+$scope.serverId+'/'+selectedItem.updates);
+				notificationService.show('No images to show, returning to list view',TOAST_TYPE_ERROR, TOAST_LENGTH_LONG);
 				return;
 			}
 			$scope.counter = 0;
-			//console.log('init',$scope.firstImage,$scope.secondImage);
 			$scope.firstImage = $scope.folder+$scope.collection[0];
 			getCurrentImageInfo();
         }, function(response) {
@@ -62,6 +63,11 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 		}
 	}
 	
+	$scope.back = function(){
+		if(selectedItem){
+			$location.path('/list/'+$scope.itemId+'/'+$scope.serverId+'/'+selectedItem.updates);
+		}
+	}
 	$scope.prevImage = function(){
 		//cancelTimeout();
 		var prev = $scope.counter-1;
@@ -134,7 +140,6 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 		}
 	}
 	function switchImage(){
-		
 		if($scope.playing){
 			if(playTimer){
 				$timeout.cancel(playTimer);
@@ -148,6 +153,7 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 		}
 	}
 	$scope.$on('$destroy', function () {
+$rootScope.inGallery=false;
 		$timeout.cancel(playTimer);
 		angular.element($window).off('keydown ', onKeyPress);
 	});

@@ -1,14 +1,15 @@
-mainApp.directive('console',['$window','$timeout','$rootScope',function($window, $timeout, $rootScope ){
+mainApp.directive('console',['$window','$timeout','$rootScope', '$http',function($window, $timeout, $rootScope, $http){
 	return {
 		restrict: 'EA',
 		scope:{},
-		template:'<textarea ng-model="myTextarea"></textarea><div></div>',
+		templateUrl: 'partials/console.html',
 		link:function(scope, element, attrs){
 			scope.textarea= element.find('textarea')[0];
 		},
 		controller:function($scope){
 			var MAX_LENGTH = 200;
 			$scope.myTextarea='';
+			visible = false;
 			function scrollTop(){
 				$timeout(function(){
 					$scope.textarea.scrollTop = $scope.textarea.scrollHeight;
@@ -20,11 +21,25 @@ mainApp.directive('console',['$window','$timeout','$rootScope',function($window,
 				}
 				return str;
 			}
+			$scope.hide = function(){
+				$rootScope.consoleShow = false;
+			};
 			$scope.$watch(function(){return $rootScope.consoleShow},function(newVal){
 				if(newVal){
 					scrollTop();
+					$scope.checkSize();
 				}
+				visible = newVal;
 			});
+			$scope.checkSize = function(){
+				var that = this;
+				$http({method: 'GET', url: 'server/folder_size.php', cache: false}).
+				then(function(response) {
+					$scope.size = response.data.size;
+				}, function(response) {
+					console.log(response);
+				});
+			}
 			function parseStack(stack,ctor){
 				var err = stack.split(/\r?\n|\r/g);
 				for(var i=0;i<err.length;i++){
@@ -54,7 +69,6 @@ mainApp.directive('console',['$window','$timeout','$rootScope',function($window,
 					console.log = function(){
 						var arg = arguments;
 						var stack = parseStack(new Error().stack,this.constructor.name);
-						
 						$scope.$applyAsync(function(){
 							var str='';
 							for(var k in arg){
