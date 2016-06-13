@@ -8,8 +8,12 @@ $data = file_get_contents($url, false, $proxy ? stream_context_create(array('htt
 if(!is_dir($dir)){
 	mkdir($dir, 0777, true);
 }
-list($width, $height, $type, $attr) = getimagesize($url);
-if($data && $width > 0 && $height > 0){
+if($data ){
 	file_put_contents($link, $data);
+	list($width, $height, $type, $attr) = getimagesize($link);
+	echo $width.':'.$height;
+	if($width < 0 || $height < 0){
+		unlink($link);
+	}
 }
 ?>
