@@ -17,11 +17,9 @@ $context = NULL;
 
 $data = NULL;
 if(file_exists($link) && @getimagesize($link)){
-	//die("$link");
 	header("Folder: true");
-	$data = file_get_contents($link);
+	readfile($link);
 }else{
-	//die("$href/$name$ending");
 	$proxy = PasswordSingleton::getInstance()->getProxy();
 	if($proxy){
 		$context = stream_context_create(array('http'=>array('method'=>"GET",'proxy' => $proxy)));
@@ -29,9 +27,11 @@ if(file_exists($link) && @getimagesize($link)){
 	header("Internet: true");
 	$data = file_get_contents("$href/".($img?$img:$name)."$ending",false, $context);
 	if(!is_dir("../$folder/$server_folder/$name")) mkdir("../$folder/$server_folder/$name", 0777, true);
-	file_put_contents($link, $data);
+	if($data){
+		file_put_contents($link, $data);
+		$after = microtime(true) - $before;
+		header('Duration: '.$after);
+		echo $data;
+	}
 }
-$after = microtime(true) - $before;
-header('Duration: '.$after);
-echo $data;
 ?>

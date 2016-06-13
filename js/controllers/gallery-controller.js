@@ -8,23 +8,7 @@ mainApp.controller('GalleryCtrl', ['$scope','$http', '$routeParams', '$timeout',
 	var playTimer = null; 
 	var selectedItem = dataStorageService.getSelectedItem($scope.itemId,$scope.serverId);
 	console.log(selectedItem);
-$rootScope.inGallery=true;
-	function isIncluded(value) {
-		//     /^(ra)([0-9]){0,}x([0-9]){0,}\.(jpg)$/g
-		// ra4x001.jpg
-		var regexp = new RegExp('^('+$scope.itemId.substr(0,2)+')([0-9]){0,}x([0-9]){0,}\.(jpg)$', "g");
-		var myArray = value.match(regexp);
-		
-		if(myArray){
-			var match = value.match(/\d+/g);
-			if(match && match[0] && selectedItem.viewed){
-				//don't return if viewed
-				return selectedItem.viewed.indexOf(parseInt(match[0]))==-1;
-			}
-			return true;
-		}
-		return false;
-	}
+	$rootScope.inGallery=true;
 	function onKeyPress(e) {
 		if (e.keyCode == '37') {
 		   $scope.prevImage();
@@ -36,25 +20,17 @@ $rootScope.inGallery=true;
 	}
 	(function init(){
 		angular.element($window).on('keydown ', onKeyPress);
-		$http({method: 'GET', url: 'server/read_folder.php?q='+$scope.itemId+'&r='+$scope.serverId, cache: false}).
-        then(function(response) {
-			if(response.data.message){
-				console.log(response.data.message);
-				return;
-			}
-			$scope.collection = response.data.files.filter(isIncluded);
-			$scope.folder = response.data.folder+'/';
-			if(!$scope.collection || $scope.collection.length ===0){
-				$location.path('/list/'+$scope.itemId+'/'+$scope.serverId+'/'+selectedItem.updates);
-				notificationService.show('No images to show, returning to list view',TOAST_TYPE_ERROR, TOAST_LENGTH_LONG);
-				return;
-			}
+		dataStorageService.getStoredFoldeData($scope.itemId,$scope.serverId).then(function(response){
+			$scope.collection = response.files;
+			$scope.folder = response.folder;
 			$scope.counter = 0;
 			$scope.firstImage = $scope.folder+$scope.collection[0];
 			getCurrentImageInfo();
-        }, function(response) {
-			console.log(response);
-		});
+		},function(){
+			$location.path('/list/'+$scope.itemId+'/'+$scope.serverId+'/'+selectedItem.updates);
+			notificationService.show('No images to show, returning to list view',TOAST_TYPE_ERROR, TOAST_LENGTH_LONG);
+		})
+		
 	})();
 	$scope.togglePlay = function(){
 		$scope.playing = !$scope.playing;

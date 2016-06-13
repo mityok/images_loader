@@ -12,7 +12,7 @@ mainApp.controller('MenuCtrl', ['$scope', '$rootScope','$window', '$cookies', '$
 	});
 	
 	function onKeyPress(e) {
-		if(e.code == 'KeyC'){
+		if(e.code == 'KeyX'){
 			$scope.openConsole();
 		}
 		if(e.code == 'KeyV' && $location.path() != "/login"){

@@ -3,6 +3,8 @@
 mainApp.service('dataStorageService',function($http, $q){
 	var list = null;
 	var date = null;
+	var filesCollection = null;
+	var folderLocation = null;
 	function updateValues(value) {
 		var dt = new Date();
 		if(value.date.toUpperCase() === 'TODAY'){
@@ -19,7 +21,50 @@ mainApp.service('dataStorageService',function($http, $q){
 		value.updates = parseInt(value.updates);
 		//
 	}
-
+	this.getStoredFoldeData = function(itemId,serverId){
+		if( folderLocation && filesCollection && filesCollection.length>0){
+			console.log('has list');
+			return $q.when({files:filesCollection,folder:folderLocation});
+		}
+		return this.getFolderData(itemId,serverId).then(function(){
+			return {files:filesCollection,folder:folderLocation};
+			})
+		
+	}
+	this.getFolderData = function(itemId,serverId){
+		var that = this;
+		var selectedItem = that.getSelectedItem(itemId,serverId);
+		return $http({method: 'GET', url: 'server/read_folder.php?q='+itemId+'&r='+serverId, cache: false}).
+        then(function(response) {
+			if(response.data.message){
+				console.log(response.data.message);
+				return $q.reject('no data: '+ data.message);
+			}
+			function isIncluded(value) {
+				//     /^(ra)([0-9]){0,}x([0-9]){0,}\.(jpg)$/g
+				// ra4x001.jpg
+				var regexp = new RegExp('^('+itemId.substr(0,2)+')([0-9]){0,}x([0-9]){0,}\.(jpg)$', "g");
+				var myArray = value.match(regexp);
+				
+				if(myArray){
+					var match = value.match(/\d+/g);
+					if(match && match[0] && selectedItem && selectedItem.viewed){
+						//don't return if viewed
+						return selectedItem.viewed.indexOf(parseInt(match[0]))==-1;
+					}
+					return true;
+				}
+				return false;
+			}
+			filesCollection = response.data.files.filter(isIncluded);
+			folderLocation = response.data.folder+'/';
+			if(!filesCollection || filesCollection.length ===0){			
+				return $q.reject('no data');
+			}
+        }, function(response) {
+			return $q.reject(response.data);
+		});
+	}
 	this.loadFromNet = function(){
 		var that = this;
 		$http({method: 'GET', url: 'server/exist_multi_start.php', cache: false}).

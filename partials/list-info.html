@@ -1,7 +1,7 @@
 <div class="list-info">
 	<div ng-if="initialLoad">
 		<span class="item" ng-repeat="i in store" title="{{itemId}}">
-			<a href="#/gallery/{{itemId}}/{{serverId}}">
+			<a ng-click="goToGallery(itemId,serverId)">
 				<img image-stop ng-src="server/get_gallery_thumb.php?s={{serverId}}&n={{itemId}}&g={{i}}&c=1&m=1">
 			</a>
 			<div class="item-counter">{{arr[i]}} / {{files[i]}}</div>

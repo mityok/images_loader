@@ -1,5 +1,5 @@
 "use strict";
-mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout', '$location', 'dataStorageService', 'stateService', function ($scope, $routeParams, $http, $timeout, $location, dataStorageService, stateService ) {
+mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout', '$location', 'dataStorageService', 'stateService','notificationService', 'TOAST_LENGTH_LONG', 'TOAST_TYPE_ERROR', function ($scope, $routeParams, $http, $timeout, $location, dataStorageService, stateService, notificationService, TOAST_LENGTH_LONG, TOAST_TYPE_ERROR) {
 	$scope.itemId = $routeParams.itemId;
 	$scope.serverId = $routeParams.serverId;
 	$scope.updates = $routeParams.updates;
@@ -60,7 +60,13 @@ mainApp.controller('ListInfoCtrl', ['$scope', '$routeParams', '$http', '$timeout
 			$scope.store.push(i);
 		}
 	}
-
+	$scope.goToGallery = function(itemId, serverId){
+		dataStorageService.getFolderData(itemId,serverId).then(function(){
+			$location.path('/gallery/'+itemId+'/'+serverId);
+		},function(){
+			notificationService.show("No images to show, can't go to gallery",TOAST_TYPE_ERROR, TOAST_LENGTH_LONG);
+		});
+	};
 	$scope.getGallery = function(src,server,count,i){
 		if($scope.currentLoadingGalleries.indexOf(i)==-1){
 			$scope.currentLoadingGalleries.push(i);
