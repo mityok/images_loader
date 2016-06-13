@@ -107,6 +107,10 @@ class PasswordSingleton{
 	}
 	public function backgroundPost($url){
 	  $parts=parse_url($url);
+	  //fix for unix
+	  if($parts['host'] === 'localhost'){
+		  $parts['host']='127.0.0.1';
+	  }
 	  $fp = fsockopen($parts['host'], 
 			  isset($parts['port'])?$parts['port']:80, 
 			  $errno, $errstr, 30);

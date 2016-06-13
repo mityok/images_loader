@@ -24,7 +24,6 @@ if(file_exists($link) && @getimagesize($link)){
 	header('Durations: '.$after);
 	header("Internet: true");
 	header("Host: ".$_SERVER['SERVER_NAME']);
-	header("Host2: ".$_SERVER['HTTP_REFERER']);
 	header("Host3: ".$_SERVER['HTTP_HOST']);
 	$proxy = PasswordSingleton::getInstance()->getProxy();
 	readfile($url, false, $proxy ? stream_context_create(array('http'=>array('method'=>"GET",'proxy' => $proxy))) : NULL);
