@@ -1,8 +1,8 @@
 <?php
 include_once("pass.php");
-$link = $_POST['link'];
-$url = $_POST['url'];
-$dir = $_POST['dir'];
+$link = isset($_POST['link'])?$_POST['link']:$_GET['link'];
+$url = isset($_POST['url'])?$_POST['url']:$_GET['url'];
+$dir = isset($_POST['dir'])?$_POST['dir']:$_GET['dir'];
 $proxy = PasswordSingleton::getInstance()->getProxy();
 $data = file_get_contents($url, false, $proxy ? stream_context_create(array('http'=>array('method'=>"GET",'proxy' => $proxy))) : NULL);
 if(!is_dir($dir)){
